@@ -1,24 +1,28 @@
-const Favourite = require("../models/favourite");
 const Home = require("../models/home");
+const User = require("../models/user");
 
 const {ObjectId}=require('mongodb');
 
 exports.getIndex = (req, res, next) => {
-  Home.fetchAll().then(registerHome => {
+  Home.find().then(registerHome => {
     res.render('store/index', {
-      registerHome, // ✅ ensure this is passed
-      currentPage: 'index'
+      registerHome, 
+      currentPage: 'index',
+      isLoggedIn : req.isLoggedIn,
+      user : req.session.user
     });
   });
 };
 
 
 exports.getHomes = (req, res, next) => {
-  Home.fetchAll().then(registerHome => {
+  Home.find().then(registerHome => {
     res.render("store/home-list", {
       registerHome: registerHome,
       pageTitle: "Homes List",
       currentPage: "Home",
+      isLoggedIn : req.isLoggedIn,
+      user : req.session.user
     });
   });
 };
@@ -27,67 +31,48 @@ exports.getBookings = (req, res, next) => {
   res.render("store/booking", {
     pageTitle: "My Bookings",
     currentPage: "bookings",
+    isLoggedIn : req.isLoggedIn,
+    user : req.session.user
   })
 };
 
-exports.getFavouriteList = (req, res, next) => {
-  Favourite.getFavourites()
-    .then(favourites => {
-      const favoriteIds = favourites.map(fav => new ObjectId(String(fav.homeId)));
-
-      Home.fetchAll()
-        .then(registeredHomes => {
-          const favouriteHomes = registeredHomes.filter(home =>
-            favoriteIds.some(favId => favId.equals(home._id))
-          );
-
-          console.log("Favourites fetched:", favoriteIds);
-
-          res.render("store/favourite-list", {
-            favorites: favouriteHomes,
-            pageTitle: "My Favourites",
-            currentPage: "favourites",
-          });
-        });
-    })
-    .catch(err => {
-      console.log("Error loading favorites:", err);
+exports.getFavouriteList = async(req,res,next)=>{
+  const userId = req.session.user._id;
+  const user = await User.findById(userId).populate('favourites');
+    res.render("store/favourite-list",{
+      favorites: user.favourites,
+      currentPage: "favourites",
+      isLoggedIn : req.isLoggedIn,
+      user : req.session.user
     });
+}
+
+exports.postAddToFavourite = async (req, res, next) => {
+  const homeId = req.body.homeId;
+  const userId = req.session.user._id;
+  const user = await User.findById(userId).populate('favourites');
+  if(!user.favourites.includes(homeId)){
+    user.favourites.push(homeId);
+    await user.save();
+  }
+  res.redirect("/favourites");
 };
 
 
-exports.postAddToFavourite = (req, res, next) => {
-  const homeId = req.body.homeId;
+exports.postRemoveFromFavourite = (req, res, next) => {
+  const homeId = req.params.homeId;
 
-  Favourite.getFavourites()
-    .then(favourites => {
-      const alreadyFavourite = favourites.some(fav => fav.homeId.toString() === homeId);
-      if (alreadyFavourite) {
-        console.log("Home already in favourites");
-        return res.redirect("/favourites");
-      }
-
-      const fav = new Favourite(homeId);
-      return fav.save().then(() => {
-        console.log("Home added to favourites");
-        res.redirect("/favourites");
-      });
+  Favourite.deleteOne({ homeId: homeId })
+    .then(result => {
+      console.log("Home removed from favourites");
+      res.redirect("/favourites");
     })
     .catch(error => {
-      console.log("Error checking/adding to favourites:", error);
+      console.log("Error while removing from Favourite", error);
       res.redirect("/favourites");
     });
 };
 
-exports.postRemoveFromFavourite = (req, res, next) => {
-  const homeId = req.params.homeId;
-  Favourite.deleteById(homeId).then(result => {
-    console.log("Home removed to favourites");
-  }).catch(error => {
-    console.log('Error while adding to Favourite', error);
-  });
-  res.redirect("/favourites");
-} 
 
 exports.getHomeDetails = (req, res, next) => {
   const homeId = req.params.homeId;
@@ -100,6 +85,8 @@ exports.getHomeDetails = (req, res, next) => {
         home: home,
         pageTitle: "Home Detail",
         currentPage: "Home",
+        isLoggedIn : req.isLoggedIn,
+        user : req.session.user
       });
     }
   })

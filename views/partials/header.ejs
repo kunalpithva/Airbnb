@@ -1,25 +1,74 @@
- <header class="bg-white shadow-md">
-      <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-        <a href="/" class="text-2xl font-bold text-rose-500">Airbnb</a>
-        <nav class="flex gap-4 items-center">
+<header class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+    <!-- Logo -->
+    <a href="/" class="text-3xl font-extrabold text-rose-500 tracking-tight">Airbnb</a>
 
-          <a href="/home-list" class="<%= currentPage === 'Home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600' %> px-4 py-2 rounded transition">Home</a>
+    <!-- Navigation -->
+    <nav class="flex items-center gap-4">
 
-          <a href="/host/host-home-list" class="<%= currentPage === 'host-home-list' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600' %> px-4 py-2 rounded transition">
-            Host Home
+      <% if (isLoggedIn) { %>
+        <% if (user && user.userType === 'guest') { %>
+
+          <a href="/home-list"
+            class="<%= currentPage === 'Home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            Home
           </a>
 
-          <a href="/host/add-home" class="<%= currentPage === '/host/add-home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600' %> px-4 py-2 rounded transition">
-            Add Home
-          </a>
-          <a href="/booking" class="<%= currentPage === 'bookings' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600' %> px-4 py-2 rounded transition">
+          <a href="/booking"
+            class="<%= currentPage === 'bookings' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
             Bookings
           </a>
 
-          <a href="/favourites" class="<%= currentPage === 'favourites' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600' %> px-4 py-2 rounded transition">
+          <a href="/favourites"
+            class="<%= currentPage === 'favourites' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
             Favorites
           </a>
-          <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
-        </nav>
-      </div>
-    </header>
+
+        <% } else if (user && user.userType === 'host') { %>
+
+          <a href="/host/host-home-list"
+            class="<%= currentPage === 'host-home-list' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            Host Home
+          </a>
+
+          <a href="/host/add-home"
+            class="<%= currentPage === 'add-home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            Add Home
+          </a>
+
+        <% } %>
+      <% } %>
+
+      <!-- Auth Buttons -->
+      <% if (!isLoggedIn) { %>
+        <a href="/login">
+          <button
+            class="border border-rose-500 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-md text-sm font-semibold transition">
+            Login
+          </button>
+        </a>
+
+        <a href="/signup">
+          <button
+            class="border border-rose-500 text-white bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded-md text-sm font-semibold transition">
+            Sign Up
+          </button>
+        </a>
+      <% } else { %>
+        <form action="/logout" method="POST">
+          <button
+            class="border border-rose-500 text-rose-500 hover:bg-rose-100 px-4 py-2 rounded-md text-sm font-semibold transition">
+            Log Out
+          </button>
+        </form>
+      <% } %>
+
+      <!-- Avatar -->
+      <% if (isLoggedIn) { %>
+        <div class="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-inner">
+          <i class="fas fa-user"></i>
+        </div>
+      <% } %>
+    </nav>
+  </div>
+</header>
