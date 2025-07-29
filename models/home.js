@@ -17,12 +17,13 @@ const homeSchema = mongoose.Schema({
     required: true
   },
   photoUrl:  String,
-});
 
-// homeSchema.pre('findOneAndDelete', async function(next){
-//   const homeId = this.getQuery()._id;
-//   await favourite.deleteMany({homeId: homeId});
-//   next();
-// })
+  host: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
+
+});
 
 module.exports = mongoose.model('Home',homeSchema);

@@ -6,55 +6,52 @@
     <title>Airbnb | Home</title>
     <link rel="stylesheet" href="output.css" />
   </head>
-  <body class="bg-gray-50 text-gray-800 font-sans ">
+  <body class="bg-gray-50 text-gray-800 font-sans antialiased leading-relaxed">
+    
     <!-- Navbar -->
-   <%- include('../partials/header') %>
+    <%- include('../partials/header') %>
 
     <!-- Hero Section -->
     <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
-      <div class="bg-black bg-opacity-50 p-6 rounded text-white text-center">
-        <h2 class="text-3xl md:text-4xl font-semibold">Welcome to index page</h2>
-        <p class="text-lg mt-2">Explore homes, cabins, and unique places to stay</p>
+      <div class="bg-black/50 backdrop-blur-sm p-6 rounded-lg text-white text-center shadow-lg">
+        <h2 class="text-3xl md:text-4xl font-bold drop-shadow-sm">Welcome to index page</h2>
+        <p class="text-lg mt-2 font-medium">Explore homes, cabins, and unique places to stay</p>
       </div>
     </section>
 
     <!-- Home Listings -->
-    <main class="max-w-7xl mx-auto px-4 py-10">
-      <h3 class="text-2xl font-semibold mb-6">Places to stay</h3>
+    <main class="max-w-7xl mx-auto px-4 py-12">
+      <h3 class="text-2xl font-bold mb-8 text-rose-600 tracking-tight">Places to stay</h3>
 
-     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-  <% registerHome.forEach(home => { 
-     if (!home || !home._id) return; // 👈 Skip null/invalid entries
-%>
-  <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-    <a href="/homes/<%= home._id %>">
-      <img
-        src="<%= home.photoUrl %>"
-        alt="<%= home.houseName %>"
-        class="w-full h-48 object-cover"
-      />
-      <div class="p-4 space-y-1">
-        <h4 class="text-lg font-bold text-gray-900"><%= home.houseName %></h4>
-        <p class="text-sm text-gray-600">📍 <%= home.location %></p>
-        <p class="text-sm text-gray-600">💰 $<%= home.price %> / night</p>
-        <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
-        <button class="mt-4 bg-red-500 hover:bg-red-700 text-white font-medium py-2 px-4 rounded w-50%">
-          Book
-        </button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <% registerHome.forEach(home => { 
+          if (!home || !home._id) return;
+        %>
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100">
+          <a href="/homes/<%= home._id %>">
+            <img
+              src="<%= home.photoUrl %>"
+              alt="<%= home.houseName %>"
+              class="w-full h-48 object-cover transition duration-300 hover:scale-105"
+            />
+            <div class="p-4 space-y-2">
+              <h4 class="text-lg font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
+              <p class="text-sm text-gray-600 flex items-center gap-1">📍 <%= home.location %></p>
+              <p class="text-sm text-gray-600">💰 <span class="font-medium">$<%= home.price %></span> / night</p>
+              <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
+              <button class="mt-4 w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 rounded-lg transition">
+                Book Now
+              </button>
+            </div>
+          </a>
+        </div>
+        <% }) %>
       </div>
-    </a>
-  </div>
-<% }) %>
-
-</div>
-
-
-
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t mt-10 top-10">
-      <div class="max-w-7xl mx-auto p-4 text-center text-gray-500 text-sm ">
+    <footer class="bg-white border-t mt-16">
+      <div class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm">
         © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
       </div>
     </footer>

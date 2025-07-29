@@ -1,72 +1,69 @@
 <header class="bg-white shadow-md sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
     <!-- Logo -->
     <a href="/" class="text-3xl font-extrabold text-rose-500 tracking-tight">Airbnb</a>
 
     <!-- Navigation -->
     <nav class="flex items-center gap-4">
-
       <% if (isLoggedIn) { %>
         <% if (user && user.userType === 'guest') { %>
-
           <a href="/home-list"
-            class="<%= currentPage === 'Home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            class="px-4 py-2 rounded-md text-sm font-medium transition 
+              <%= currentPage === 'Home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Home
           </a>
-
           <a href="/booking"
-            class="<%= currentPage === 'bookings' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            class="px-4 py-2 rounded-md text-sm font-medium transition 
+              <%= currentPage === 'bookings' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Bookings
           </a>
-
           <a href="/favourites"
-            class="<%= currentPage === 'favourites' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            class="px-4 py-2 rounded-md text-sm font-medium transition 
+              <%= currentPage === 'favourites' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Favorites
           </a>
-
         <% } else if (user && user.userType === 'host') { %>
-
           <a href="/host/host-home-list"
-            class="<%= currentPage === 'host-home-list' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            class="px-4 py-2 rounded-md text-sm font-medium transition 
+              <%= currentPage === 'host-home-list' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Host Home
           </a>
-
           <a href="/host/add-home"
-            class="<%= currentPage === 'add-home' ? 'bg-rose-500 text-white' : 'hover:bg-rose-600 hover:text-white' %> px-4 py-2 rounded-md transition text-sm font-medium">
+            class="px-4 py-2 rounded-md text-sm font-medium transition 
+              <%= currentPage === 'add-home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Add Home
           </a>
-
         <% } %>
       <% } %>
 
-      <!-- Auth Buttons -->
       <% if (!isLoggedIn) { %>
         <a href="/login">
-          <button
-            class="border border-rose-500 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-md text-sm font-semibold transition">
+          <button class="px-4 py-2 text-sm font-semibold border border-rose-500 text-rose-500 rounded-md hover:bg-rose-50 transition">
             Login
           </button>
         </a>
-
         <a href="/signup">
-          <button
-            class="border border-rose-500 text-white bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded-md text-sm font-semibold transition">
+          <button class="px-4 py-2 text-sm font-semibold bg-rose-500 text-white rounded-md hover:bg-rose-600 transition">
             Sign Up
           </button>
         </a>
       <% } else { %>
         <form action="/logout" method="POST">
-          <button
-            class="border border-rose-500 text-rose-500 hover:bg-rose-100 px-4 py-2 rounded-md text-sm font-semibold transition">
+          <button class="px-4 py-2 text-sm font-semibold border border-rose-500 text-rose-500 rounded-md hover:bg-rose-100 transition">
             Log Out
           </button>
         </form>
       <% } %>
 
-      <!-- Avatar -->
-      <% if (isLoggedIn) { %>
-        <div class="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-inner">
-          <i class="fas fa-user"></i>
+      <!-- Avatar + Name -->
+      <% if (isLoggedIn && user && user.firstName) { %>
+        <div class="flex items-center gap-2 pl-4 border-l border-gray-200 ml-2">
+          <div class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-500 text-white text-sm font-bold uppercase shadow">
+            <%= user.firstName.charAt(0) %>
+          </div>
+          <span class="text-sm font-medium text-gray-800">
+            <%= user.firstName %>
+          </span>
         </div>
       <% } %>
     </nav>
