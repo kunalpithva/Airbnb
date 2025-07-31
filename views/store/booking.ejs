@@ -19,7 +19,23 @@
 
     <!-- Home Listings -->
     <main class="max-w-7xl mx-auto px-4 py-10">
-      <h3 class="text-2xl font-semibold mb-6">Places to stay</h3>
+      <h2 class="text-2xl font-bold mb-4">My Bookings</h2>
+<% if (bookings.length > 0) { %>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% bookings.forEach(booking => { %>
+      <div class="bg-white rounded-xl shadow p-4">
+        <img src="<%= booking.home.photoUrl %>" alt="<%= booking.home.houseName %>" class="rounded-md h-40 w-full object-cover mb-2">
+        <h3 class="text-xl font-semibold"><%= booking.home.houseName %></h3>
+        <p class="text-gray-600">📍 <%= booking.home.location %></p>
+        <p class="text-gray-700">💰 $<%= booking.home.price %> / night</p>
+        <p class="text-sm text-gray-400 mt-1">Booked on: <%= booking.bookedAt.toLocaleDateString() %></p>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p class="text-gray-500">You have not booked any homes yet.</p>
+<% } %>
+
 
      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     </div>

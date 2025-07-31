@@ -39,9 +39,24 @@
               <p class="text-sm text-gray-600 flex items-center gap-1">📍 <%= home.location %></p>
               <p class="text-sm text-gray-600">💰 <span class="font-medium">$<%= home.price %></span> / night</p>
               <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
-              <button class="mt-4 w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 rounded-lg transition">
-                Book Now
-              </button>
+              <% if (isLoggedIn && user.userType !== 'host') { %>
+                <a 
+                  href="/booking"
+                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
+                >
+                  Book Now
+                </a>
+              <% } else if (!isLoggedIn) { %>
+                <a 
+                  href="/login"
+                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
+                >
+                  Book Now
+                </a>
+              <% } %>
+
+
+
             </div>
           </a>
         </div>

@@ -6,50 +6,66 @@
     <title>Airbnb | Home</title>
     <link rel="stylesheet" href="output.css" />
   </head>
-  <body class="bg-gray-50 text-gray-800 font-sans">
+  <body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
     <!-- Navbar -->
     <%- include('../partials/header') %>
 
     <!-- Hero Section -->
     <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
-      <div class="bg-black bg-opacity-50 p-6 rounded-lg text-white text-center shadow-lg">
-        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Home page</h2>
-        <p class="text-lg mt-2">Explore homes, cabins, and unique places to stay</p>
+      <div class="bg-black/60 p-6 rounded-lg text-white text-center shadow-xl backdrop-blur">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Home Page</h2>
+        <p class="text-lg mt-2">Explore homes, cabins & unique places to stay</p>
       </div>
     </section>
 
     <!-- Home Listings -->
     <main class="max-w-7xl mx-auto px-4 py-12">
-      <h3 class="text-3xl font-semibold mb-8 text-gray-800">Places to stay</h3>
+      <h3 class="text-3xl font-bold mb-10 text-gray-800">Places to Stay</h3>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         <% registerHome.forEach(home => { %>
           <% if (home) { %>
-            <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden">
               <a href="/homes/<%= home._id %>">
                 <img
                   src="<%= home.photoUrl %>"
                   alt="<%= home.houseName %>"
-                  class="w-full h-48 object-cover transition duration-300 hover:scale-105"
+                  class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
                 />
               </a>
 
               <div class="p-4 space-y-2">
-                <h4 class="text-xl font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
-                <p class="text-sm text-gray-600">📍 <%= home.location %></p>
-                <p class="text-sm text-gray-600">💰 $<%= home.price %> / night</p>
-                <p class="text-sm text-yellow-500 font-medium">⭐ <%= home.rating %> / 5</p>
+                <h4 class="text-lg font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
+                <p class="text-sm text-gray-500">📍 <%= home.location %></p>
+                <p class="text-sm text-gray-500">💰 $<%= home.price %> / night</p>
+                <p class="text-sm text-yellow-500 font-semibold">⭐ <%= home.rating %> / 5</p>
 
-                <div class="flex gap-2 mt-4">
+                <div class="flex flex-col gap-2 mt-4">
                   <a
                     href="/homes/<%= home._id %>"
-                    class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-md transition duration-200"
+                    class="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow transition"
                   >
-                    View Details
+                    🔍 View Details
                   </a>
-                </div>
 
-                <%- include('../partials/favourite', { home: home }) %>
+                  <%- include('../partials/favourite', { home: home }) %>
+
+                  <% if (isLoggedIn && user.userType !== 'host') { %>
+                <a 
+                  href="/booking"
+                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
+                >
+                  Book Now
+                </a>
+              <% } else if (!isLoggedIn) { %>
+                <a 
+                  href="/login"
+                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
+                >
+                  Book Now
+                </a>
+              <% } %>
+                </div>
               </div>
             </div>
           <% } %>
