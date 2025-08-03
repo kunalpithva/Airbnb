@@ -12,12 +12,12 @@
     <%- include('../partials/header') %>
 
     <!-- Hero Section -->
-    <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
+    <!-- <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
       <div class="bg-black/50 backdrop-blur-sm p-6 rounded-lg text-white text-center shadow-lg">
         <h2 class="text-3xl md:text-4xl font-bold drop-shadow-sm">Welcome to index page</h2>
         <p class="text-lg mt-2 font-medium">Explore homes, cabins, and unique places to stay</p>
       </div>
-    </section>
+    </section> -->
 
     <!-- Home Listings -->
     <main class="max-w-7xl mx-auto px-4 py-12">
@@ -40,20 +40,25 @@
               <p class="text-sm text-gray-600">💰 <span class="font-medium">$<%= home.price %></span> / night</p>
               <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
               <% if (isLoggedIn && user.userType !== 'host') { %>
-                <a 
-                  href="/booking"
-                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
-                >
-                  Book Now
-                </a>
-              <% } else if (!isLoggedIn) { %>
-                <a 
-                  href="/login"
-                  class="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
-                >
-                  Book Now
-                </a>
-              <% } %>
+  <form action="/booking" method="POST">
+    <input type="hidden" name="homeId" value="<%= home._id %>">
+    <button
+      type="submit"
+      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
+    >
+      🏡 Book Now
+    </button>
+  </form>
+<% } else if (!isLoggedIn) { %>
+  <form action="/login" method="GET">
+    <button
+      type="submit"
+      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
+    >
+      🔒 Login to Book
+    </button>
+  </form>
+<% } %>
 
 
 

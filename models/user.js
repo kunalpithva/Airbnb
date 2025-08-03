@@ -26,7 +26,8 @@ const userSchema = mongoose.Schema({
   favourites:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Home'
-  }]
+  }],
+
 });
 
 module.exports = mongoose.model('User',userSchema);

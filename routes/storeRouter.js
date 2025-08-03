@@ -13,6 +13,7 @@ storeRouter.get("/homes/:homeId", storeController.getHomeDetails);
 storeRouter.post("/favourites", storeController.postAddToFavourite);
 storeRouter.get("/favourites", storeController.getFavouriteList);
 storeRouter.post("/favourites/delete/:homeId", storeController.postRemoveFromFavourite);
+storeRouter.post('/booking/cancel', storeController.postCancelBooking);
 
 
 

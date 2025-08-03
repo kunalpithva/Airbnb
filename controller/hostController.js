@@ -2,33 +2,13 @@ const Home = require('../models/home');
 
 exports.getAddhomes = (req, res, next) => {
   res.render('host/edit-home.ejs',
-  { currentPage: '/host/edit-home' , 
+  { currentPage: '/host/add-home' , 
     isLoggedIn : req.isLoggedIn,
     editing: false,
     user : req.session.user
   });
 }
  
-// exports.getEditHome = (req, res, next) => {
-//   const editing = req.query.editing === 'true';
-//   Home.findById(req.params.homeId).then(home => {
-//     if (!home) {
-//       console.log("Home not found");
-//       return res.redirect('/host/host-home-list');
-//     }
-//     else{
-//       console.log("Home found : ", home);
-//       res.render('host/edit-home', 
-//       { 
-//         currentPage: '/host/edit-home' ,
-//         home: home , 
-//         editing:editing ,
-//         isLoggedIn : req.isLoggedIn,
-//         user : req.session.user
-//       });
-//     }
-//   });
-// }
 
 exports.getEditHome = (req, res, next) => {
   const editing = req.query.editing === 'true';
@@ -40,7 +20,7 @@ exports.getEditHome = (req, res, next) => {
       }
 
       res.render('host/edit-home', {
-        currentPage: '/host/edit-home',
+        currentPage: '/host/add-home',
         home,
         editing,
         isLoggedIn: req.isLoggedIn,
@@ -54,16 +34,6 @@ exports.getEditHome = (req, res, next) => {
 };
 
 
-// exports.getHostHome = (req, res, next) => {
-//   Home.find().then(registerHome => 
-//     res.render('host/host-home-list', { 
-//       registerHome: registerHome ,
-//       currentPage: 'host-home-list',
-//       isLoggedIn : req.isLoggedIn,
-//       user : req.session.user
-//    })
-//   );  
-// };
 
 exports.getHostHome = (req, res, next) => {
   Home.find({ host: req.session.user._id }) // 👈 only this host's homes
@@ -83,38 +53,23 @@ exports.getHostHome = (req, res, next) => {
 
 
 exports.postAddhomes = (req, res, next) => {
- const {houseName, location, price, photoUrl, rating } = req.body;
+ const {houseName, location, price, photoUrl, rating, description} = req.body;
   const home = new Home({
     houseName,
     location,
     price,
     photoUrl,
     rating,
-    host: req.session.user._id
+    host: req.session.user._id,
+    description
 });
   home.save();
   res.redirect('/host/host-home-list');
 }
 
-// exports.postEditHome = (req, res, next) => {
-//   const { _id, houseName, location, price, photoUrl, rating } = req.body;
-//   Home.findById(_id).then((home)=>{
-//     home.houseName = houseName;
-//     home.location = location;
-//     home.price = price;
-//     home.photoUrl = photoUrl;
-//     home.rating = rating;
-//     home.save().then(result => {
-//       console.log("Home updated successfully");
-//     }).catch(err => {
-//       console.error("Error updating home:", err);
-//     });
-//     res.redirect('/host/host-home-list');
-//   })
-// };
 
 exports.postEditHome = (req, res, next) => {
-  const { _id, houseName, location, price, photoUrl, rating } = req.body;
+  const { _id, houseName, location, price, photoUrl, rating, description} = req.body;
 
   Home.findOne({ _id, host: req.session.user._id }) // 👈 only allow if host
     .then(home => {
@@ -127,6 +82,7 @@ exports.postEditHome = (req, res, next) => {
       home.price = price;
       home.photoUrl = photoUrl;
       home.rating = rating;
+      home.description = description;
 
       return home.save();
     })

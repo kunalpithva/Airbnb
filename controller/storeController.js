@@ -24,7 +24,7 @@ exports.getHomes = (req, res, next) => {
       pageTitle: "Homes List",
       currentPage: "Home",
       isLoggedIn : req.isLoggedIn,
-      user : req.session.user
+      user : req.session.user,
     });
   });
 };
@@ -36,7 +36,7 @@ exports.getBookings = async (req, res, next) => {
 
     res.render("store/booking", {
       pageTitle: "My Bookings",
-      currentPage: "bookings",
+      currentPage: "booking",
       isLoggedIn: req.isLoggedIn,
       user: req.session.user,
       bookings
@@ -48,28 +48,47 @@ exports.getBookings = async (req, res, next) => {
 };
 
 
-exports.postBookings = async (req, res, next) => {
+exports.postBookings = async (req, res) => {
   try {
-    const homeId = req.body.homeId;
     const userId = req.session.user._id;
-
+    const homeId = req.body.homeId;
     if (!userId || !homeId) {
       return res.redirect('/login');
     }
-
-    // Prevent duplicate bookings (optional)
-    const existingBooking = await Booking.findOne({ user: userId, home: homeId });
-    if (!existingBooking) {
-      await Booking.create({ user: userId, home: homeId });
+    const user = await User.findById(userId);
+    const home = await Home.findById(homeId);
+    if (!user) {
+      return res.redirect('/login');
     }
-
-    res.redirect('/bookings');
-  } catch (err) {
-    console.error('Booking failed:', err);
+    // Create booking with firstName copied from user
+    await Booking.create({
+      user: userId,
+      home: homeId,
+      firstName: user.firstName,
+      homeName: home.houseName,
+      homePrice: home.price  
+    });
+    res.redirect('/booking');
+  } catch (error) {
+    console.error('Booking failed:', error);
     res.redirect('/homes');
   }
 };
 
+exports.postCancelBooking = async (req, res, next) => {
+  try {
+    const homeId = req.body.homeId;
+    const userId = req.session.user._id;
+    if (!userId || !homeId) {
+      return res.redirect('/login');
+    }
+    await Booking.deleteOne({ user: userId, home: homeId });
+    res.redirect('/booking');
+  } catch (err) {
+    console.error('Failed to cancel booking:', err);
+    res.redirect('/booking');
+  }
+};
 
 
 
@@ -84,14 +103,30 @@ exports.getFavouriteList = async(req,res,next)=>{
     });
 }
 
+// exports.postAddToFavourite = async (req, res, next) => {
+//   const homeId = req.body.homeId;
+//   const userId = req.session.user._id;
+//   const user = await User.findById(userId).populate('favourites');
+//   if(!user.favourites.includes(homeId)){
+//     user.favourites.push(homeId);
+//     await user.save();
+//   }
+//   res.redirect("/favourites");
+// };
+
+
 exports.postAddToFavourite = async (req, res, next) => {
   const homeId = req.body.homeId;
   const userId = req.session.user._id;
   const user = await User.findById(userId).populate('favourites');
-  if(!user.favourites.includes(homeId)){
+
+  const isAlreadyFavourite = user.favourites.some(fav => fav._id.toString() === homeId);
+
+  if (!isAlreadyFavourite) {
     user.favourites.push(homeId);
     await user.save();
   }
+
   res.redirect("/favourites");
 };
 
@@ -109,21 +144,28 @@ exports.postRemoveFromFavourite = async (req, res) => {
 };
 
 
-exports.getHomeDetails = (req, res, next) => {
-  const homeId = req.params.homeId;
-  Home.findById(homeId).then(home => {
+exports.getHomeDetails = async (req, res, next) => {
+  try {
+    const homeId = req.params.homeId;
+
+    const home = await Home.findById(homeId).populate('host', 'firstName');
+
     if (!home) {
       console.log("Home not found");
-      res.redirect("/homes");
-    } else {
-      res.render("store/home-detail", {
-        home: home,
-        pageTitle: "Home Detail",
-        currentPage: "Home",
-        isLoggedIn : req.isLoggedIn,
-        user : req.session.user
-      });
+      return res.redirect("/homes");
     }
-  })
+
+    res.render("store/home-detail", {
+      home: home,
+      pageTitle: "Home Detail",
+      currentPage: "Home",
+      isLoggedIn: req.isLoggedIn,
+      user: req.session.user,
+      userType: req.session.user ? req.session.user.userType : null,
+    });
+  } catch (err) {
+    console.error("Error fetching home details:", err);
+    res.redirect("/homes");
+  }
 };
 

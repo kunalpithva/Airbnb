@@ -34,15 +34,18 @@
           <h2 class="text-3xl font-semibold text-gray-900"><%= home.houseName %></h2>
           <p class="text-gray-600 text-lg">📍 Location: <%= home.location %></p>
           <p class="text-gray-600 text-lg">💰 Price: $<%= home.price %> / night</p>
-          <p class="text-yellow-500 text-lg">⭐ Rating: <%= home.rating %> / 5</p>
-          <p class="text-gray-700 mt-2 leading-relaxed">
-            This charming stay offers everything you need for a relaxing vacation. Enjoy comfort, location, and modern amenities.
-          </p>
+          <p class="text-gray-600 text-lg">⭐ Rating: <%= home.rating %> / 5</p>
+          <p class="text-gray-600 text-lg">👤 Host: <%= home.host?.firstName || 'Unknown' %></p>
+          <p class="text-gray-600 text-lg">📝 Description: <%= home.description %></p>
+          
 
           <!-- Actions -->
-          <div class="pt-6 flex flex-wrap gap-4">
-            <%- include('../partials/favourite') %>
-          </div>
+           <% if (userType !== 'host') { %>
+            <div class="pt-6 flex flex-wrap gap-4">
+              <%- include('../partials/favourite', { home: home, userType: userType }) %>
+            </div>
+          <% } %>
+
         </div>
       </div>
     </main>

@@ -1,42 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Airbnb | Home</title>
-    <link rel="stylesheet" href="output.css" />
-  </head>
-  <body class="bg-gray-50 text-gray-800 font-sans ">
-    <!-- Navbar -->
-   <%- include('../partials/header') %> 
-    <!-- Hero Section -->
-    <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
-      <div class="bg-black bg-opacity-50 p-6 rounded text-white text-center">
-        <h2 class="text-3xl md:text-4xl font-semibold">Booking</h2>
-        <p class="text-lg mt-2">Explore homes, cabins, and unique places to stay</p>
+<html lang="en" class="scroll-smooth" >
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Airbnb | My Bookings</title>
+  <link rel="stylesheet" href="/output.css" />
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Navbar -->
+  <%- include('../partials/header') %>
+
+  <!-- Page Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 py-10">
+    <h2 class="text-3xl font-bold mb-6">My Bookings</h2>
+
+    <% if (bookings.length > 0) { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% bookings.forEach(booking => { %>
+          <div
+            class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group"
+          >
+            <a href="/homes/<%= booking.home._id %>" class="block">
+              <img
+                src="<%= booking.home.photoUrl %>"
+                alt="<%= booking.home.houseName %>"
+                class="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
+                onerror="this.onerror=null;this.src='https://placehold.co/800x600/E0E0E0/333333?text=Image+Not+Found';"
+              />
+            </a>
+
+            <div class="p-4 space-y-2">
+              <h4 class="text-lg font-semibold text-gray-900 truncate">
+                <%= booking.home.houseName %>
+              </h4>
+              <p class="text-sm text-gray-500 flex items-center gap-1">
+                <i class="fas fa-map-marker-alt text-rose-500"></i> 📍
+                <%= booking.home.location %>
+              </p>
+              <p class="text-sm text-gray-500 flex items-center gap-1">
+                <i class="fas fa-dollar-sign text-green-600"></i> 💰
+                $<%= booking.home.price %> / night
+              </p>
+              <p class="text-sm text-yellow-500 font-semibold flex items-center gap-1">
+                <i class="fas fa-star"></i> ⭐
+                <%= booking.home.rating %> / 5
+              </p>
+
+              <p class="text-sm text-gray-400 mt-1">
+                Booked on: <%= booking.bookedAt.toLocaleDateString() %>
+              </p>
+
+              <form action="/booking/payment" method="POST" class="flex-grow">
+                <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
+                <button
+                  type="submit"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
+                >
+                  💳 Pay Now
+                </button>
+              </form>
+              <form action="/booking/cancel" method="POST" class="mt-4">
+                <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
+                <button
+                  type="submit"
+                  class="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
+                >
+                  ❌ Cancel Booking
+                </button>
+              </form>
+
+            </div>
+          </div>
+        <% }) %>
       </div>
-    </section>
+    <% } else { %>
+      <p class="text-gray-500 text-center text-lg mt-10">
+        You have not booked any homes yet.
+      </p>
+    <% } %>
+  </main>
 
-    <!-- Home Listings -->
-    <main class="max-w-7xl mx-auto px-4 py-10">
-      <h2 class="text-2xl font-bold mb-4">My Bookings</h2>
-<% if (bookings.length > 0) { %>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% bookings.forEach(booking => { %>
-      <div class="bg-white rounded-xl shadow p-4">
-        <img src="<%= booking.home.photoUrl %>" alt="<%= booking.home.houseName %>" class="rounded-md h-40 w-full object-cover mb-2">
-        <h3 class="text-xl font-semibold"><%= booking.home.houseName %></h3>
-        <p class="text-gray-600">📍 <%= booking.home.location %></p>
-        <p class="text-gray-700">💰 $<%= booking.home.price %> / night</p>
-        <p class="text-sm text-gray-400 mt-1">Booked on: <%= booking.bookedAt.toLocaleDateString() %></p>
-      </div>
-    <% }) %>
-  </div>
-<% } else { %>
-  <p class="text-gray-500">You have not booked any homes yet.</p>
-<% } %>
-
-
-     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <!-- Footer -->
+  <footer class="bg-white border-t">
+    <div class="max-w-7xl mx-auto p-4 text-center text-gray-500 text-sm">
+      © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
     </div>
-    
+  </footer>
+</body>
+</html>

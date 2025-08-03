@@ -16,8 +16,11 @@ const homeSchema = mongoose.Schema({
     type: Number,
     required: true
   },
+  description: { 
+    type: String,
+    required: true 
+  },
   photoUrl:  String,
-
   host: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
