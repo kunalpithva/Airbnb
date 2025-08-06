@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment | Airbnb Clone</title>
+  <link rel="stylesheet" href="/output.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <%- include('../partials/header', { isLoggedIn: isLoggedIn, user: user, currentPage: 'payment' }) %>
+
+  <!-- Page Content -->
+  <div class="flex-1">
+    <% if (isLoggedIn) { %>
+    <main class="max-w-2xl mx-auto mt-16 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+      <h2 class="text-3xl font-bold text-center text-rose-600 mb-6">💳 Choose Payment Method</h2>
+
+      <!-- Payment Method Selector -->
+      <div class="space-y-4 mb-8">
+        <% ['card', 'upi', 'wallet'].forEach(method => { %>
+          <label class="flex items-center space-x-3 cursor-pointer">
+            <input type="radio" name="paymentMethod" value="<%= method %>" <%= method === 'card' ? 'checked' : '' %> class="form-radio text-rose-600" />
+            <span><%= method === 'card' ? 'Credit / Debit Card' : method.toUpperCase() === 'UPI' ? 'UPI' : 'Wallet' %></span>
+          </label>
+        <% }) %>
+      </div>
+
+      <!-- Payment Form -->
+      <form id="paymentForm" action="/payment/booking/pay/<%= booking.home._id %>" method="POST">
+        <input type="hidden" name="bookingId" value="<%= booking._id %>">
+
+        <!-- CARD SECTION -->
+        <div id="cardFields">
+          <div>
+            <label class="block mb-1 text-sm font-medium">Cardholder Name</label>
+            <input type="text" name="cardName" required placeholder="John Doe"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500"/>
+          </div>
+
+          <div>
+            <label class="block mb-1 text-sm font-medium">Card Number</label>
+            <div class="relative">
+              <input type="text" name="cardNumber" id="cardNumber" placeholder="1234 5678 9012 3456" required
+                class="w-full px-4 py-3 border border-gray-300 rounded-md pr-12 shadow-sm focus:ring-rose-500 focus:border-rose-500" />
+              <img id="cardIcon" src="" class="absolute top-1/2 right-3 transform -translate-y-1/2 w-8 h-5 hidden" />
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <label class="block mb-1 text-sm font-medium">Expiry Date</label>
+              <input type="text" name="expiry" required placeholder="MM/YY"
+                class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500"/>
+            </div>
+            <div class="flex-1">
+              <label class="block mb-1 text-sm font-medium">CVV</label>
+              <input type="password" name="cvv" maxlength="3" required placeholder="•••"
+                class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPI SECTION -->
+        <div id="upiFields" class="hidden">
+          <label class="block mb-1 text-sm font-medium">UPI ID</label>
+          <input type="text" name="upiId" placeholder="example@bank"
+            class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500"/>
+        </div>
+
+        <!-- WALLET SECTION -->
+        <div id="walletFields" class="hidden">
+          <label class="block mb-1 text-sm font-medium">Select Wallet</label>
+          <select name="walletType"
+            class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500">
+            <option value="">-- Choose Wallet --</option>
+            <option value="Paytm">Paytm</option>
+            <option value="PhonePe">PhonePe</option>
+            <option value="Mobikwik">Mobikwik</option>
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit" id="submitBtn"
+          class="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-semibold py-3 rounded-md shadow transition duration-300 mt-6"
+        >
+          💳 Make Payment
+        </button>
+      </form>
+    </main>
+    <% } else { %>
+      <div class="text-center mt-32 text-xl text-gray-600 font-medium">
+        🔒 Please <a href="/login" class="text-rose-500 underline hover:text-rose-600">login</a> to access the payment page.
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-16">
+    <div class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm">
+      © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- JS Logic (unchanged, just cleaned & structured) -->
+  <script>
+    const radios = document.querySelectorAll('input[name="paymentMethod"]');
+    const cardFields = document.getElementById('cardFields');
+    const upiFields = document.getElementById('upiFields');
+    const walletFields = document.getElementById('walletFields');
+    const cardNumberInput = document.getElementById('cardNumber');
+    const expiryInput = document.querySelector('input[name="expiry"]');
+    const cardIcon = document.getElementById('cardIcon');
+    const form = document.getElementById('paymentForm');
+    // const submitBtn = document.getElementById('submitBtn');
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        cardFields.classList.add('hidden');
+        upiFields.classList.add('hidden');
+        walletFields.classList.add('hidden');
+
+        cardFields.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
+        upiFields.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
+        walletFields.querySelectorAll('select').forEach(select => select.removeAttribute('required'));
+
+        if (radio.value === 'card') {
+          cardFields.classList.remove('hidden');
+          cardFields.querySelectorAll('input').forEach(input => input.setAttribute('required', ''));
+        }
+        if (radio.value === 'upi') {
+          upiFields.classList.remove('hidden');
+          upiFields.querySelector('input').setAttribute('required', '');
+        }
+        if (radio.value === 'wallet') {
+          walletFields.classList.remove('hidden');
+          walletFields.querySelector('select').setAttribute('required', '');
+        }
+      });
+    });
+
+    document.querySelector('input[name="paymentMethod"]:checked').dispatchEvent(new Event('change'));
+
+    cardNumberInput.addEventListener('input', () => {
+      const value = cardNumberInput.value.replace(/\s/g, '').slice(0, 16);
+      cardNumberInput.value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+
+      if (/^4/.test(value)) {
+        cardIcon.src = 'https://img.icons8.com/color/48/visa.png';
+        cardIcon.classList.remove('hidden');
+      } else if (/^5[1-5]/.test(value)) {
+        cardIcon.src = 'https://img.icons8.com/color/48/mastercard.png';
+        cardIcon.classList.remove('hidden');
+      } else {
+        cardIcon.classList.add('hidden');
+      }
+    });
+
+    expiryInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\s/g, '').replace(/\//g, '');
+      if (value.length > 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    form.addEventListener('submit', e => {
+      // REMOVE THIS LINE: e.preventDefault();
+
+      const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      let isValid = true;
+      let errorMessage = '';
+
+      // Validation logic (keep same as your code)...
+
+      if (!isValid) {
+        e.preventDefault(); // Only prevent if validation fails
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: errorMessage,
+          confirmButtonColor: '#e11d48'
+        });
+        return;
+      }
+
+      // No preventDefault -> the form will be submitted normally
+    });
+
+  </script>
+
+</body>
+</html>

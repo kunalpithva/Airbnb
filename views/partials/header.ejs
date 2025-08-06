@@ -1,3 +1,5 @@
+<% const current = typeof currentPage !== 'undefined' ? currentPage : ''; %>
+
 <header class="bg-white shadow-md sticky top-0 z-50">
   <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
     <!-- Logo -->
@@ -9,28 +11,28 @@
         <% if (user && user.userType === 'guest') { %>
           <a href="/home-list"
             class="px-4 py-2 rounded-md text-sm font-medium transition 
-              <%= currentPage === 'Home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
+              <%= current === 'Home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Home
           </a>
           <a href="/booking"
             class="px-4 py-2 rounded-md text-sm font-medium transition 
-              <%= currentPage === 'booking' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
+              <%= current === 'booking' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Bookings
           </a>
           <a href="/favourites"
             class="px-4 py-2 rounded-md text-sm font-medium transition 
-              <%= currentPage === 'favourites' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
+              <%= current === 'favourites' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Favorites
           </a>
         <% } else if (user && user.userType === 'host') { %>
           <a href="/host/host-home-list"
             class="px-4 py-2 rounded-md text-sm font-medium transition 
-              <%= currentPage === 'host-home-list' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
+              <%= current === 'host-home-list' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Host Home
           </a>
           <a href="/host/add-home" 
             class="px-4 py-2 rounded-md text-sm font-medium transition 
-              <%= currentPage === '/host/add-home'  ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
+              <%= current === '/host/add-home'  ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
             Add Home
           </a>
         <% } %>

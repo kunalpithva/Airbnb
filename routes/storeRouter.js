@@ -16,5 +16,4 @@ storeRouter.post("/favourites/delete/:homeId", storeController.postRemoveFromFav
 storeRouter.post('/booking/cancel', storeController.postCancelBooking);
 
 
-
 module.exports = storeRouter;

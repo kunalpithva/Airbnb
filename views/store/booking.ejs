@@ -10,7 +10,8 @@
 <body class="flex flex-col min-h-screen bg-gray-50 text-gray-800 font-sans">
 
   <!-- Navbar -->
-  <%- include('../partials/header') %>
+  <%- include('../partials/header', { isLoggedIn: isLoggedIn, user: user, currentPage: 'payment' }) %>
+
 
   <!-- Page Content -->
   <main class="flex-grow max-w-7xl mx-auto px-4 py-10">
@@ -52,24 +53,52 @@
                 Booked on: <%= booking.bookedAt.toLocaleDateString() %>
               </p>
 
-              <form action="/booking/payment" method="POST" class="flex-grow">
+
+              <form action="/booking/cancel" method="POST" class="mt-4 flex gap-2">
+              <% if (isLoggedIn && user.userType !== 'host') { %>
                 <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
+                
                 <button
                   type="submit"
-                  class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
-                >
-                  💳 Pay Now
-                </button>
-              </form>
-              <form action="/booking/cancel" method="POST" class="mt-4">
-                <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
-                <button
-                  type="submit"
-                  class="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
+                  class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
                 >
                   ❌ Cancel Booking
                 </button>
               </form>
+
+              
+               
+               <!-- <form id="paymentForm" action="/payment/booking/pay/<%= booking.home._id %>" method="POST">
+                  <input type="hidden" name="bookingId" value="<%= booking._id %>">
+                  <input type="text" name="cardNumber" placeholder="Card Number" required
+                        class="border rounded px-2 py-1 text-sm w-full mt-2 mb-2" />
+                  <button
+                    type="submit"
+                    class="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
+                  >
+                    💳 Pay Now
+                  </button>
+                </form> -->
+
+                
+<% if (booking.isPaid) { %>
+  <span class="bg-emerald-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow text-center block">
+    ✅ Payment Done
+  </span>
+<% } else { %>
+  <a
+    href="/payment/booking/pay?homeId=<%= booking.home._id %>&bookingId=<%= booking._id %>"
+    class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200 text-center block"
+  >
+    💳 Pay Now
+  </a>
+<% } %>
+
+
+
+              <% } %>
+
+
 
             </div>
           </div>

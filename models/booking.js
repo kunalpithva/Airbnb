@@ -13,7 +13,11 @@ const bookingSchema = new mongoose.Schema({
   },
   homePrice:{
     type: String,
-  }
+  },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

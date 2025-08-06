@@ -10,6 +10,7 @@ const db_path="mongodb+srv://kunaljpithva:kUn%40l1111@kunal.a1w7jxa.mongodb.net/
 // Local Module
 const storeRouter = require("./routes/storeRouter");
 const hostRouter = require("./routes/hostRouter");
+const paymentRoutes = require('./routes/payment');
 const rootDir = require("./utils/pathUtil");
 const errorController = require("./controller/error");
 const authRouter = require('./routes/authRouter');
@@ -33,8 +34,12 @@ app.use(express.static(path.join(rootDir, 'public')));
 app.use(session({
     secret : "airbnb website",
     resave : false,
-    saveUninitialized : true,
-    store : store
+    saveUninitialized : false,
+    store : store,
+    cookie: {
+      maxAge: 30 * 60 * 1000 ,// ⏱️ 30 minutes in milliseconds
+      secure: false 
+    }
   })
 );
 
@@ -54,6 +59,10 @@ app.use("/host",(req,res,next)=>{
     res.redirect('/login');
   }}
 },hostRouter);
+// app.js or server.js
+
+// Mount router on /payment
+app.use('/payment', paymentRoutes);
 
 
 

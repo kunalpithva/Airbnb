@@ -17,22 +17,46 @@ exports.getIndex = (req, res, next) => {
 };
 
 
-exports.getHomes = (req, res, next) => {
-  Home.find().then(registerHome => {
+
+exports.getHomes = async (req, res, next) => {
+  try {
+    const homes = await Home.find();
+    const userId = req.session.user ? req.session.user._id : null;
+
+    let userBookings = [];
+
+    if (userId) {
+      userBookings = await Booking.find({ user: userId }).select('home');
+    }
+
+    const bookedHomeIds = new Set(userBookings.map(b => b.home.toString()));
+
+    const registerHome = homes.map(home => ({
+      ...home._doc,
+      isBooked: bookedHomeIds.has(home._id.toString())
+    }));
+
     res.render("store/home-list", {
-      registerHome: registerHome,
+      registerHome,
       pageTitle: "Homes List",
       currentPage: "Home",
-      isLoggedIn : req.isLoggedIn,
-      user : req.session.user,
+      isLoggedIn: req.isLoggedIn,
+      user: req.session.user,
     });
-  });
+  } catch (err) {
+    console.error("Error loading homes:", err);
+    res.redirect("/");
+  }
 };
+
+
 
 exports.getBookings = async (req, res, next) => {
   try {
     const userId = req.session.user._id;
-    const bookings = await Booking.find({ user: userId }).populate('home');
+
+    // Only get unpaid bookings
+    const bookings = await Booking.find({ user: userId, isPaid: false }).populate('home');
 
     res.render("store/booking", {
       pageTitle: "My Bookings",
@@ -48,32 +72,50 @@ exports.getBookings = async (req, res, next) => {
 };
 
 
+
+
 exports.postBookings = async (req, res) => {
   try {
     const userId = req.session.user._id;
     const homeId = req.body.homeId;
+
     if (!userId || !homeId) {
       return res.redirect('/login');
     }
+
     const user = await User.findById(userId);
     const home = await Home.findById(homeId);
-    if (!user) {
+    if (!user || !home) {
       return res.redirect('/login');
     }
-    // Create booking with firstName copied from user
+
+    // 🔍 Check if this home is already booked by the user
+    const existingBooking = await Booking.findOne({
+      user: userId,
+      home: homeId
+    });
+
+    if (existingBooking) {
+      // 🛑 Prevent duplicate booking and redirect to bookings page
+      return res.redirect('/booking');
+    }
+
+    // ✅ Create booking
     await Booking.create({
       user: userId,
       home: homeId,
       firstName: user.firstName,
       homeName: home.houseName,
-      homePrice: home.price  
+      homePrice: home.price
     });
+
     res.redirect('/booking');
   } catch (error) {
     console.error('Booking failed:', error);
     res.redirect('/homes');
   }
 };
+
 
 exports.postCancelBooking = async (req, res, next) => {
   try {
@@ -103,16 +145,6 @@ exports.getFavouriteList = async(req,res,next)=>{
     });
 }
 
-// exports.postAddToFavourite = async (req, res, next) => {
-//   const homeId = req.body.homeId;
-//   const userId = req.session.user._id;
-//   const user = await User.findById(userId).populate('favourites');
-//   if(!user.favourites.includes(homeId)){
-//     user.favourites.push(homeId);
-//     await user.save();
-//   }
-//   res.redirect("/favourites");
-// };
 
 
 exports.postAddToFavourite = async (req, res, next) => {
@@ -168,4 +200,7 @@ exports.getHomeDetails = async (req, res, next) => {
     res.redirect("/homes");
   }
 };
+
+
+
 

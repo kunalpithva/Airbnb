@@ -169,18 +169,27 @@
                   </a>
 
                   <%- include('../partials/favourite', { home: home, user: user }) %>
-
+                  
 
                   <% if (isLoggedIn && user.userType !== 'host') { %>
-                    <form action="/booking" method="POST">
-                      <input type="hidden" name="homeId" value="<%= home._id %>">
+                    <% if (home.isBooked) { %>
                       <button
-                        type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition-all duration-200 transform hover:scale-105"
+                        class="w-full flex items-center justify-center gap-2 bg-gray-400 cursor-not-allowed text-white font-medium py-2.5 px-4 rounded-xl shadow"
+                        disabled
                       >
-                        <i class="fas fa-house-chimney"></i> 🏡 Book Now
+                        🚫 Already Booked
                       </button>
-                    </form>
+                    <% } else { %>
+                      <form action="/booking" method="POST">
+                        <input type="hidden" name="homeId" value="<%= home._id %>">
+                        <button
+                          type="submit"
+                          class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition-all duration-200 transform hover:scale-105"
+                        >
+                          🏡 Book Now
+                        </button>
+                      </form>
+                    <% } %>
                   <% } else if (!isLoggedIn) { %>
                     <form action="/login" method="GET">
                       <button
@@ -191,6 +200,7 @@
                       </button>
                     </form>
                   <% } %>
+
                 </div>
               </div>
             </div>
