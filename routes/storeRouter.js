@@ -2,6 +2,7 @@
 const express = require("express");
 const storeRouter = express.Router();
 
+
 // Local Module
 const storeController = require("../controller/storeController");
 
@@ -14,6 +15,8 @@ storeRouter.post("/favourites", storeController.postAddToFavourite);
 storeRouter.get("/favourites", storeController.getFavouriteList);
 storeRouter.post("/favourites/delete/:homeId", storeController.postRemoveFromFavourite);
 storeRouter.post('/booking/cancel', storeController.postCancelBooking);
+
+
 
 
 module.exports = storeRouter;

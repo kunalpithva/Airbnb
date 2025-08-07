@@ -1,5 +1,8 @@
 const Booking = require('../models/booking');
 const Payment = require('../models/payment');
+const Home = require("../models/home");
+const User = require("../models/user");
+const booking = require('../models/booking');
 
 exports.getPaymentPage = async (req, res) => {
   const user = req.session.user;
@@ -27,26 +30,34 @@ exports.postPayment = async (req, res) => {
     const homeId = req.params.homeId;
     const userId = req.session.user._id;
 
-    const booking = await Booking.findOne({ _id: bookingId, user: userId, home: homeId }).populate('home');
+    // Populate home to access _id
+    const booking = await Booking.findOne({ home: homeId }).populate('home');
+    console.log("Booking ID:", booking);
+
     if (!booking) return res.redirect('/booking');
 
+    const user = await User.findById(userId);
+
+    // ✅ Create payment
     const amount = booking.home.price;
 
-    const payment = new Payment({
-      user: userId,
-      booking: booking._id,
-      home: booking.home._id,
-      amount,
-      cardNumber: cardNumber || null,
-      upiId: upiId || null,
-      walletType: walletType || null,
-    });
+const payment = new Payment({
+  user: userId,
+  booking: booking._id,
+  home: booking.home._id,
+  amount,
+  cardNumber: cardNumber || null,
+  upiId: upiId || null,
+  walletType: walletType || null,
+});
 
     await payment.save();
 
-    // Delete the booking after successful payment
-    await Booking.deleteOne({ _id: bookingId });
+    // ✅ Mark booking as paid
+    booking.isPaid = true;
+    await booking.save();
 
+    // ✅ Redirect to success page
     res.render('store/payment-success', {
       isLoggedIn: true,
       user: req.session.user,
@@ -57,3 +68,6 @@ exports.postPayment = async (req, res) => {
     res.redirect('/payment/failure');
   }
 };
+
+
+

@@ -18,6 +18,9 @@ const {default : mongoose} = require('mongoose');
 
 const app = express();
 
+app.use('/uploads', express.static('uploads'));
+
+
 app.set('view engine', 'ejs');
 
 //store session in mongodb

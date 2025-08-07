@@ -64,74 +64,6 @@
     <!-- Navbar -->
     <%- include('../partials/header') %>
 
-    <!-- Hero Section -->
-    <!-- <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
-      <div class="bg-black/60 p-6 rounded-lg text-white text-center shadow-xl backdrop-blur">
-        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Home Page</h2>
-        <p class="text-lg mt-2">Explore homes, cabins & unique places to stay</p>
-      </div>
-    </section> -->
-
-    <!-- Home Listings -->
-    <!-- <main class="max-w-7xl mx-auto px-4 py-12">
-      <h3 class="text-3xl font-bold mb-10 text-gray-800">Places to Stay</h3>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <% registerHome.forEach(home => { %>
-          <% if (home) { %>
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden">
-              <a href="/homes/<%= home._id %>">
-                <img
-                  src="<%= home.photoUrl %>"
-                  alt="<%= home.houseName %>"
-                  class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </a>
-
-              <div class="p-4 space-y-2">
-                <h4 class="text-lg font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
-                <p class="text-sm text-gray-500">📍 <%= home.location %></p>
-                <p class="text-sm text-gray-500">💰 $<%= home.price %> / night</p>
-                <p class="text-sm text-yellow-500 font-semibold">⭐ <%= home.rating %> / 5</p>
-
-                <div class="flex flex-col gap-2 mt-4">
-                  <a
-                    href="/homes/<%= home._id %>"
-                    class="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow transition"
-                  >
-                    🔍 View Details
-                  </a>
-
-                  <%- include('../partials/favourite', { home: home }) %>
-
-                  <% if (isLoggedIn && user.userType !== 'host') { %>
-                    <form action="/booking" method="POST">
-                      <input type="hidden" name="homeId" value="<%= home._id %>">
-                      <button
-                        type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-                      >
-                        🏡 Book Now
-                      </button>
-                    </form>
-                  <% } else if (!isLoggedIn) { %>
-                    <form action="/login" method="GET">
-                      <button
-                        type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-                      >
-                        🔒 Login to Book
-                      </button>
-                    </form>
-                  <% } %>
-                </div>
-              </div>
-            </div>
-          <% } %>
-        <% }) %>
-      </div>
-    </main> -->
-
     <main class="max-w-7xl mx-auto px-4 py-12">
       <h3 class="text-3xl font-bold mb-10 text-gray-800">Places to Stay</h3>
 
@@ -166,13 +98,13 @@
                     class="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow transition-all duration-200 transform hover:scale-105"
                   >
                     <i class="fas fa-info-circle"></i> 🔍 View Details
-                  </a>
+                </a>
 
                   <%- include('../partials/favourite', { home: home, user: user }) %>
-                  
 
                   <% if (isLoggedIn && user.userType !== 'host') { %>
-                    <% if (home.isBooked) { %>
+                    <div><%= console.log(home) %></div>
+                    <% if (home.isBooked && !home.isBookableAgain) { %>
                       <button
                         class="w-full flex items-center justify-center gap-2 bg-gray-400 cursor-not-allowed text-white font-medium py-2.5 px-4 rounded-xl shadow"
                         disabled
@@ -200,7 +132,6 @@
                       </button>
                     </form>
                   <% } %>
-
                 </div>
               </div>
             </div>

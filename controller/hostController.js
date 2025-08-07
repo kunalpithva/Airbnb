@@ -53,7 +53,8 @@ exports.getHostHome = (req, res, next) => {
 
 
 exports.postAddhomes = (req, res, next) => {
- const {houseName, location, price, photoUrl, rating, description} = req.body;
+ const {houseName, location, price, rating, description} = req.body;
+ const photoUrl = `/uploads/${req.file.filename}`;
   const home = new Home({
     houseName,
     location,
@@ -68,32 +69,42 @@ exports.postAddhomes = (req, res, next) => {
 }
 
 
-exports.postEditHome = (req, res, next) => {
-  const { _id, houseName, location, price, photoUrl, rating, description} = req.body;
+exports.postEditHome = async (req, res, next) => {
+  try {
+    const { houseName, location, price, rating, description } = req.body;
 
-  Home.findOne({ _id, host: req.session.user._id }) // 👈 only allow if host
-    .then(home => {
-      if (!home) {
-        return res.status(403).send('Unauthorized');
-      }
+    if (!req.session.user || !req.session.user._id) {
+      return res.status(400).send("Bad request: Missing home ID or user session.");
+    }
 
-      home.houseName = houseName;
-      home.location = location;
-      home.price = price;
-      home.photoUrl = photoUrl;
-      home.rating = rating;
-      home.description = description;
+    const home = await Home.findOne({ host: req.session.user._id });
+    console.log('Session user:', home);
 
-      return home.save();
-    })
-    .then(() => {
-      res.redirect('/host/host-home-list');
-    })
-    .catch(err => {
-      console.error("Error updating home:", err);
-      res.redirect('/host/host-home-list');
-    });
+    if (!home) {
+      console.warn("No matching home found or unauthorized");
+      return res.status(403).send('Unauthorized');
+    }
+
+    home.houseName = houseName;
+    home.location = location;
+    home.price = price;
+    home.rating = rating;
+    home.description = description;
+
+    if (req.file) {
+      home.photoUrl = `/uploads/${req.file.filename}`;
+    }
+
+    await home.save();
+    res.redirect('/host/host-home-list');
+  } catch (err) {
+    console.error("Error updating home:", err);
+    if (!res.headersSent) {
+      res.status(500).send('Something went wrong');
+    }
+  }
 };
+
 
 
 // exports.postDeleteHome = (req, res, next) => {

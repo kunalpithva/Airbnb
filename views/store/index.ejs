@@ -39,29 +39,37 @@
               <p class="text-sm text-gray-600 flex items-center gap-1">📍 <%= home.location %></p>
               <p class="text-sm text-gray-600">💰 <span class="font-medium">$<%= home.price %></span> / night</p>
               <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
+              <form action="/booking" method="POST">
+                <input type="hidden" name="homeId" value="<%= home._id %>">
               <% if (isLoggedIn && user.userType !== 'host') { %>
-  <form action="/booking" method="POST">
-    <input type="hidden" name="homeId" value="<%= home._id %>">
-    <button
-      type="submit"
-      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-    >
-      🏡 Book Now
-    </button>
-  </form>
-<% } else if (!isLoggedIn) { %>
-  <form action="/login" method="GET">
-    <button
-      type="submit"
-      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-    >
-      🔒 Login to Book
-    </button>
-  </form>
-<% } %>
-
-
-
+                <% if (home.isBookedByOther) { %>
+                  <button
+                    class="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-600 font-medium py-2.5 px-4 rounded-xl shadow transition duration-200 cursor-not-allowed"
+                    disabled
+                  >
+                    🚫 Booked by Other
+                  </button>
+                <% } else { %>
+                  <form action="/booking" method="POST">
+                    <input type="hidden" name="homeId" value="<%= home._id %>">
+                    <button
+                      type="submit"
+                      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
+                    >
+                      🏡 Book Now
+                    </button>
+                  </form>
+                <% } %>
+              <% } else if (!isLoggedIn) { %>
+                <form action="/login" method="GET">
+                  <button
+                    type="submit"
+                    class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
+                  >
+                    🔒 Login to Book
+                  </button>
+                </form>
+              <% } %>
             </div>
           </a>
         </div>
