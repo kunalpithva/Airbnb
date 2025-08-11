@@ -4,81 +4,137 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Airbnb | Home</title>
-    <link rel="stylesheet" href="output.css" />
-  </head>
-  <body class="bg-gray-50 text-gray-800 font-sans antialiased leading-relaxed">
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Navbar -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #9ca3af;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+      }
+      /* New Card Effects */
+      .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+      .card-hover .card-image {
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .card-hover:hover .card-image {
+        transform: scale(1.08);
+      }
+      .card-hover {
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+      }
+      /* New Button Effects */
+      .btn-hover-effect:hover {
+        transform: scale(1.02);
+      }
+      .btn-hover-effect {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800 antialiased">
     <%- include('../partials/header') %>
-
-    <!-- Hero Section -->
-    <!-- <section class="bg-[url('https://source.unsplash.com/1600x500/?travel,vacation')] bg-cover bg-center h-64 flex items-center justify-center">
-      <div class="bg-black/50 backdrop-blur-sm p-6 rounded-lg text-white text-center shadow-lg">
-        <h2 class="text-3xl md:text-4xl font-bold drop-shadow-sm">Welcome to index page</h2>
-        <p class="text-lg mt-2 font-medium">Explore homes, cabins, and unique places to stay</p>
+    <%- include('../partials/profile') %>
+    
+    <section class="relative bg-white shadow-md">
+      <div class="container mx-auto px-4 py-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-rose-600 tracking-tight leading-tight">
+          Find your next getaway ✨
+        </h2>
+        <p class="text-lg md:text-xl text-gray-600 mt-3">
+          Explore homes, cabins, and unique places to stay
+        </p>
       </div>
-    </section> -->
-
-    <!-- Home Listings -->
-    <main class="max-w-7xl mx-auto px-4 py-12">
-      <h3 class="text-2xl font-bold mb-8 text-rose-600 tracking-tight">Places to stay</h3>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <% registerHome.forEach(home => { 
-          if (!home || !home._id) return;
-        %>
-        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100">
-          <a href="/homes/<%= home._id %>">
-            <img
-              src="<%= home.photoUrl %>"
-              alt="<%= home.houseName %>"
-              class="w-full h-48 object-cover transition duration-300 hover:scale-105"
-            />
-            <div class="p-4 space-y-2">
-              <h4 class="text-lg font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
-              <p class="text-sm text-gray-600 flex items-center gap-1">📍 <%= home.location %></p>
-              <p class="text-sm text-gray-600">💰 <span class="font-medium">$<%= home.price %></span> / night</p>
-              <p class="text-sm text-yellow-500">⭐ <%= home.rating %> / 5</p>
-              <form action="/booking" method="POST">
-                <input type="hidden" name="homeId" value="<%= home._id %>">
-              <% if (isLoggedIn && user.userType !== 'host') { %>
-                <% if (home.isBookedByOther) { %>
-                  <button
-                    class="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-600 font-medium py-2.5 px-4 rounded-xl shadow transition duration-200 cursor-not-allowed"
-                    disabled
-                  >
-                    🚫 Booked by Other
-                  </button>
-                <% } else { %>
-                  <form action="/booking" method="POST">
-                    <input type="hidden" name="homeId" value="<%= home._id %>">
-                    <button
-                      type="submit"
-                      class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-                    >
-                      🏡 Book Now
-                    </button>
-                  </form>
-                <% } %>
-              <% } else if (!isLoggedIn) { %>
-                <form action="/login" method="GET">
-                  <button
-                    type="submit"
-                    class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition duration-200"
-                  >
-                    🔒 Login to Book
-                  </button>
-                </form>
-              <% } %>
+    </section>
+    <main class="max-w-7xl mx-auto px-4 py-16">
+      <h3 class="text-3xl font-bold mb-12 text-gray-900 tracking-tight">🏡 Places to Stay</h3>
+      <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <% registerHome.forEach(home => { %>
+          <% if (home) { %>
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover group border border-gray-200">
+              <a href="/homes/<%= home._id %>" class="block">
+                <div class="relative h-48 overflow-hidden rounded-t-2xl">
+                  <img
+                    src="<%= home.photoUrl %>"
+                    alt="<%= home.houseName %>"
+                    class="w-full h-full object-cover card-image"
+                    onerror="this.onerror=null;this.src='https://placehold.co/800x600/E0E0E0/333333?text=No+Image';"
+                  />
+                  <span class="absolute top-3 right-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-sm font-semibold text-gray-700 shadow">
+                    <i class="fas fa-star text-yellow-500"></i> <%= home.rating %>
+                  </span>
+                </div>
+              </a>
+              <div class="p-5 space-y-3">
+                <a href="/homes/<%= home._id %>" class="block">
+                  <h4 class="text-lg font-bold text-gray-900 truncate"><%= home.houseName %></h4>
+                </a>
+                <div class="space-y-1 text-gray-600">
+                  <p class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-map-marker-alt text-rose-500"></i> <%= home.location %>
+                  </p>
+                  <p class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-dollar-sign text-green-600"></i>
+                    <span class="font-bold text-gray-900 text-base"><%= home.price %></span> / night
+                  </p>
+                </div>
+                <div class="pt-4 space-y-3">
+                  <a href="/homes/<%= home._id %>"
+                     class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
+                    <i class="fas fa-info-circle"></i> View Details
+                  </a>
+                  <% if (isLoggedIn && user.userType !== 'host') { %>
+                    <% if (home.isBooked && !home.isBookableAgain) { %>
+                      <button
+                        class="w-full bg-gray-300 text-gray-600 font-semibold py-2.5 rounded-xl shadow-inner cursor-not-allowed">
+                        🚫 Already Booked
+                      </button>
+                    <% } else { %>
+                      <form action="/booking" method="POST">
+                        <input type="hidden" name="homeId" value="<%= home._id %>">
+                        <button
+                          type="submit"
+                          class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
+                          🏡 Book Now
+                        </button>
+                      </form>
+                    <% } %>
+                  <% } else if (!isLoggedIn) { %>
+                    <form action="/login" method="GET">
+                      <button
+                        type="submit"
+                        class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
+                        <i class="fas fa-lock"></i> Login to Book
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
             </div>
-          </a>
-        </div>
+          <% } %>
         <% }) %>
       </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-16">
+    <footer class="bg-white border-t mt-16 shadow-inner">
       <div class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm">
         © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
       </div>

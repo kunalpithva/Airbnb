@@ -38,7 +38,7 @@ exports.postLogin = async (req,res,next) => {
   req.session.isLoggedIn = true;
   req.session.user = user;
   req.session.save(() => {
-      res.redirect('/'); // or wherever your homepage is
+      res.redirect('/home-list'); // or wherever your homepage is
     });
 }
 

@@ -5,104 +5,156 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Airbnb | My Bookings</title>
-  <link rel="stylesheet" href="/output.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom scroll */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #e5e7eb; /* A slightly darker gray for better contrast */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #6b7280; /* Darker gray for visibility */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4b5563; /* Even darker on hover */
+    }
+
+    /* Hover effect for buttons */
+    .btn-hover-effect:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .btn-hover-effect {
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+  </style>
 </head>
-<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800 font-sans">
+<body class="flex flex-col min-h-screen bg-gray-100 text-gray-800 antialiased">
 
-  <!-- Navbar -->
-  <%- include('../partials/header', { isLoggedIn: isLoggedIn, user: user, currentPage: 'booked' }) %>
+  <%- include('../partials/header', { isLoggedIn: isLoggedIn, user: user, currentPage: 'booking' }) %>
+    <%- include('../partials/profile') %>
 
-  <!-- Page Content -->
-  <main class="flex-grow max-w-7xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-bold text-rose-600 mb-8 text-center">🏠 Your Booked Homes</h1>
+  <main class="flex-grow max-w-7xl mx-auto px-6 py-16 w-full">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-12 text-center">
+      Your Bookings
+    </h1>
 
     <% if (bookings && bookings.length > 0) { %>
-      <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <% bookings.forEach(booking => { %>
-          <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden group hover:shadow-lg transition-shadow duration-200">
-            <a href="/homes/<%= booking.home._id %>" class="block">
-              <img 
-                src="<%= booking.home.photoUrl || booking.home.image %>" 
-                alt="<%= booking.home.houseName || booking.home.title %>" 
-                class="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
+          <div
+            class="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+          >
+            <a href="/homes/<%= booking.home._id %>" class="block overflow-hidden rounded-t-3xl">
+              <img
+                src="<%= booking.home.photoUrl || booking.home.image %>"
+                alt="<%= booking.home.houseName || booking.home.title %>"
+                class="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-500"
                 onerror="this.onerror=null;this.src='https://placehold.co/800x600/E0E0E0/333333?text=Image+Not+Found';"
               />
             </a>
 
-            <div class="p-4 space-y-2">
-              <h2 class="text-lg font-semibold truncate">
-                <%= booking.home.houseName || booking.home.title %>
-              </h2>
-              <p class="text-sm text-gray-600 flex items-center gap-1">
-                📍 <%= booking.home.location %>
+            <div class="p-6 space-y-4">
+              <a href="/homes/<%= booking.home._id %>">
+                <h2
+                  class="text-xl font-bold truncate text-gray-900 hover:text-rose-600 transition-colors cursor-pointer"
+                >
+                  <%= booking.home.houseName || booking.home.title %>
+                </h2>
+              </a>
+              <p class="text-sm text-gray-600 flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-rose-500"></i> <%= booking.home.location %>
               </p>
-              <p class="text-sm text-rose-600 font-bold">
-                ₹<%= booking.home.price %> / night
+              <p class="text-lg font-bold text-gray-900">
+                ₹<%= booking.home.price %> <span class="text-sm font-normal text-gray-500">/ night</span>
               </p>
-
-              <% if (booking.home.bedrooms !== undefined && booking.home.bathrooms !== undefined) { %>
-                <p class="text-sm text-gray-500">
-                  🛏️ <%= booking.home.bedrooms %> Beds · 🛁 <%= booking.home.bathrooms %> Baths
-                </p>
-              <% } %>
 
               <% if (booking.home.rating) { %>
-                <p class="text-sm text-yellow-500 font-semibold flex items-center gap-1">
-                  ⭐ <%= booking.home.rating %> / 5
-                </p>
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-semibold text-yellow-500">
+                    <i class="fas fa-star"></i> <%= booking.home.rating %> / 5
+                  </p>
+                  <p class="text-sm text-gray-400 italic">
+                    Booked on: <%= new Date(booking.bookedAt).toLocaleDateString() %>
+                  </p>
+                </div>
               <% } %>
 
-              <p class="text-xs text-gray-400">
-                Booked on: <%= new Date(booking.bookedAt).toLocaleDateString() %>
-              </p>
-
               <% if (isLoggedIn && user.userType !== 'host') { %>
-                <% if (!booking.isPaid) { %>
-  <form action="/booking/cancel" method="POST" class="mt-4 flex gap-2">
-    <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
-    <button
-      type="submit"
-      class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200"
-    >
-      ❌ Cancel Booking
-    </button>
-  </form>
-<% } %>
-
-
-                <% if (booking.isPaid) { %>
-                  <span
-                    class="block bg-emerald-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow text-center mt-3"
-                  >
-                    ✅ Payment Done
-                  </span>
-                <% } else { %>
-                  <a
-                    href="/payment/booking/pay?homeId=<%= booking.home._id %>&bookingId=<%= booking._id %>"
-                    class="block bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-xl shadow transition duration-200 text-center mt-3"
-                  >
-                    💳 Pay Now
-                  </a>
-                <% } %>
+                <div class="mt-5 flex flex-col gap-3">
+                  <% if (booking.isPaid) { %>
+                    <span
+                      class="block bg-emerald-600 text-white text-sm font-semibold py-3 rounded-2xl shadow-lg text-center"
+                    >
+                      ✅ Payment Completed
+                    </span>
+                  <% } else { %>
+                    <a
+                      href="/payment/booking/pay?homeId=<%= booking.home._id %>&bookingId=<%= booking._id %>"
+                      class="block bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-2xl shadow-lg text-center btn-hover-effect"
+                    >
+                      💳 Pay Now
+                    </a>
+                    <form action="/booking/cancel" method="POST">
+                      <input type="hidden" name="homeId" value="<%= booking.home._id %>" />
+                      <button
+                        type="submit"
+                        class="w-full bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold py-3 rounded-2xl shadow-lg btn-hover-effect"
+                      >
+                        ❌ Cancel Booking
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
               <% } %>
             </div>
           </div>
         <% }) %>
       </div>
     <% } else { %>
-      <p class="text-gray-500 text-center text-lg mt-20">
-        😕 You haven’t booked any homes yet.<br />
-        <a href="/home-list" class="text-rose-500 hover:text-rose-600 font-semibold underline mt-4 inline-block">Browse Homes</a>
-      </p>
+      <div class="flex flex-col items-center justify-center text-center mt-24">
+        <div class="w-24 h-24 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+        </div>
+        <p class="text-xl text-gray-600 font-medium">No bookings yet.</p>
+        <p class="text-gray-500 mt-2">
+          Start your adventure by exploring our available homes.
+        </p>
+        <a
+          href="/home-list"
+          class="mt-6 inline-block bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-colors duration-300"
+        >
+          Browse Homes
+        </a>
+      </div>
     <% } %>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-white border-t mt-16">
-    <div class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm">
+  <footer class="bg-white border-t mt-16 shadow-inner">
+    <div
+      class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm select-none"
+    >
       © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
     </div>
   </footer>
-
 </body>
 </html>

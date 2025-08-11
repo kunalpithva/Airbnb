@@ -5,7 +5,8 @@ exports.getAddhomes = (req, res, next) => {
   { currentPage: '/host/add-home' , 
     isLoggedIn : req.isLoggedIn,
     editing: false,
-    user : req.session.user
+    user : req.session.user,
+    home: null
   });
 }
  

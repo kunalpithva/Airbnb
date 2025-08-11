@@ -120,7 +120,14 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getHomes = async (req, res, next) => {
   try {
-    const homes = await Home.find();
+    const searchLocation = req.query.location;
+    let filter = {};
+
+    if (searchLocation) {
+      filter.location = { $regex: searchLocation, $options: "i" }; // case-insensitive
+    }
+
+    const homes = await Home.find(filter);
     const userId = req.session.user ? req.session.user._id.toString() : null;
 
     // User's own bookings
@@ -148,7 +155,7 @@ exports.getHomes = async (req, res, next) => {
       bookingMap.get(homeId).push(booking);
     });
 
-    // Blocked homes for current user (booked & paid & within 2 mins, or another user is in bookableAgain window)
+    // Blocked homes
     const blockedHomeIds = new Set();
 
     for (let [homeId, bookings] of bookingMap.entries()) {
@@ -159,39 +166,30 @@ exports.getHomes = async (req, res, next) => {
         const isPaid = paidHomeIds.has(homeId);
         const isByOtherUser = booking.user.toString() !== userId;
 
-        // Block if another user is still within "bookable again" window (1 to 2 mins)
         if (isByOtherUser && diffMins !== null && diffMins >= 1 && diffMins < 2) {
           blockedHomeIds.add(homeId);
         }
 
-        // Also block if payment done by another user & booking is within 2 mins
         if (isByOtherUser && isPaid && diffMins !== null && diffMins < 2) {
           blockedHomeIds.add(homeId);
         }
       }
     }
 
-    // Final list of homes for rendering
+    // Filter homes
     const registerHome = homes
       .filter(home => !blockedHomeIds.has(home._id.toString()))
       .map(home => {
         const homeId = home._id.toString();
-
         const userBooking = userBookings.find(b => b.home.toString() === homeId);
         const isBooked = !!userBooking;
-
         let isBookableAgain = false;
 
         if (isBooked) {
           const bookedAt = userBooking?.createdAt || userBooking?.bookedAt;
           const diffMins = bookedAt ? (now - new Date(bookedAt).getTime()) / (1000 * 60) : null;
 
-          // if (diffMins !== null && diffMins >= 1 && diffMins < 2) {
-          //   isBookableAgain = true; // bookable again only between 1 and 2 minutes
-          // }
-
           if (diffMins >= 2) {
-            // After 2 minutes, reset both flags
             return {
               ...home._doc,
               isBooked: false,
@@ -218,13 +216,16 @@ exports.getHomes = async (req, res, next) => {
       currentPage: "Home",
       isLoggedIn: req.isLoggedIn,
       user: req.session.user,
-      paymentMap
+      paymentMap,
+      searchQuery: searchLocation
     });
+
   } catch (err) {
     console.error("Error loading homes:", err);
     res.redirect("/");
   }
 };
+
 
 
 exports.getBookings = async (req, res, next) => {

@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Airbnb | <%= home.houseName %></title>
     <link rel="stylesheet" href="/output.css" />
+    
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- Navbar -->
     <%- include('../partials/header') %>
+    <%- include('../partials/profile') %>
+
 
     <!-- Hero Section -->
     <section class="relative h-64 bg-cover bg-center" style="background-image: url('<%= home.photoUrl %>');">
@@ -32,15 +35,39 @@
 
         <div class="p-6 space-y-5">
           <h2 class="text-3xl font-semibold text-gray-900"><%= home.houseName %></h2>
+
           <p class="text-gray-600 text-lg">📍 Location: <%= home.location %></p>
           <p class="text-gray-600 text-lg">💰 Price: $<%= home.price %> / night</p>
           <p class="text-gray-600 text-lg">⭐ Rating: <%= home.rating %> / 5</p>
-          <p class="text-gray-600 text-lg">👤 Host: <%= home.host?.firstName || 'Unknown' %></p>
-          <p class="text-gray-600 text-lg">📝 Description: <%= home.description %></p>
-          
+          <p class="text-gray-600 text-lg">👤 Host: <%= home.host?.firstName || 'Unknown' %> <%= home.host?.lastName || '' %></p>
+
+          <h3 class="text-xl font-semibold text-gray-800 mt-6">Description</h3>
+          <p class="text-gray-700"><%= home.description %></p>
+
+          <h3 class="text-xl font-semibold text-gray-800 mt-6">Amenities</h3>
+          <ul class="list-disc list-inside text-gray-700">
+            <li>Free Wi-Fi</li>
+            <li>Heating & Cooling</li>
+            <li>Kitchen with Appliances</li>
+            <li>Parking Available</li>
+            <li>24/7 Security</li>
+            <!-- You can replace these with dynamic data if available -->
+          </ul>
+
+          <h3 class="text-xl font-semibold text-gray-800 mt-6">Nearby Attractions</h3>
+          <ul class="list-disc list-inside text-gray-700">
+            <li>Local Market - 5 min walk</li>
+            <li>Nature Trails - 10 min drive</li>
+            <li>Popular Restaurant - 8 min walk</li>
+            <li>City Museum - 15 min drive</li>
+          </ul>
+
+          <h3 class="text-xl font-semibold text-gray-800 mt-6">Host Contact</h3>
+          <p class="text-gray-700">Email: <%= home.host?.email || 'Not Provided' %></p>
+          <p class="text-gray-700">Phone: +1 (555) 123-4567</p>
 
           <!-- Actions -->
-           <% if (userType !== 'host') { %>
+          <% if (userType !== 'host') { %>
             <div class="pt-6 flex flex-wrap gap-4">
               <%- include('../partials/favourite', { home: home, userType: userType }) %>
             </div>
@@ -53,7 +80,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t mt-12">
       <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
-        © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved. 
+        © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
       </div>
     </footer>
 

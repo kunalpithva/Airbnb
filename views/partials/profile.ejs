@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .profile-link-hover:hover {
+      background-color: rgba(244, 63, 94, 0.1);
+      color: #e11d48;
+    }
+  </style>
+</head>
+<body>
+  <div
+    id="profilePanel"
+    class="fixed top-0 right-0 h-full w-full sm:w-1/2 md:w-1/3 lg:w-1/4 max-w-sm bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col"
+    aria-hidden="true"
+  >
+    <div class="p-8 flex flex-col h-full relative">
+      <button
+        id="closePanel"
+        aria-label="Close profile panel"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-3xl font-bold transition-colors duration-200"
+      >
+        &times;
+      </button>
+
+      <div class="flex items-center gap-5 border-b pb-6 mb-6">
+        <div class="w-16 h-16 rounded-full bg-rose-500 text-white text-3xl font-extrabold flex items-center justify-center shadow-md uppercase">
+          <%= user.firstName ? user.firstName.charAt(0) : '?' %>
+        </div>
+        <div>
+          <p class="text-xl font-semibold text-gray-900">
+            <%= user.firstName ? user.firstName + ' ' + (user.lastName || '') : 'User' %>
+          </p>
+          <p class="text-sm text-gray-500 italic mt-1">
+            <%= user.userType ? user.userType.charAt(0).toUpperCase() + user.userType.slice(1) : 'Guest' %>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2 text-gray-700 flex-grow">
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Account</h3>
+        <p class="flex items-center gap-3 text-sm text-gray-600">
+          <i class="fas fa-envelope text-rose-500"></i>
+          <span><%= user.email || 'N/A' %></span>
+        </p>
+
+        <% if (user.userType === 'host') { %>
+          <a href="/home-list" class="flex items-center gap-3 p-3 rounded-lg text-gray-800 hover:text-rose-600 transition-colors duration-200 profile-link-hover">
+            <i class="fas fa-home text-xl text-rose-500"></i>
+            <span class="font-medium">My Homes</span>
+          </a>
+        <% } %>
+
+        <a href="/booking" class="flex items-center gap-3 p-3 rounded-lg text-gray-800 hover:text-rose-600 transition-colors duration-200 profile-link-hover">
+          <i class="fas fa-calendar-check text-xl text-rose-500"></i>
+          <span class="font-medium">My Bookings</span>
+        </a>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-4">
+        <!-- <a href="/signup" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-xl shadow transition-colors duration-200">
+          Edit Profile
+        </a> -->
+        <form action="/logout" method="POST" class="w-full">
+          <button
+            type="submit"
+            class="w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl shadow-md transition-colors duration-200"
+          >
+            Log Out
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const avatarToggle = document.getElementById('avatarToggle');
+      const profilePanel = document.getElementById('profilePanel');
+      const closePanel = document.getElementById('closePanel');
+
+      // Check if the toggle button exists before adding the event listener
+      if (avatarToggle) {
+        avatarToggle.addEventListener('click', () => {
+          profilePanel.classList.remove('translate-x-full');
+          profilePanel.setAttribute('aria-hidden', 'false');
+        });
+      }
+
+      closePanel.addEventListener('click', () => {
+        profilePanel.classList.add('translate-x-full');
+        profilePanel.setAttribute('aria-hidden', 'true');
+      });
+
+      // Optional: close panel if clicked outside it
+      document.addEventListener('click', (event) => {
+        if (
+          !profilePanel.contains(event.target) &&
+          (avatarToggle && !avatarToggle.contains(event.target))
+        ) {
+          profilePanel.classList.add('translate-x-full');
+          profilePanel.setAttribute('aria-hidden', 'true');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

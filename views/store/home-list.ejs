@@ -4,15 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Airbnb | Home</title>
-    <link rel="stylesheet" href="output.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
       body {
         font-family: 'Inter', sans-serif;
       }
-      /* Custom scrollbar for better aesthetics */
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -22,93 +23,130 @@
         border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb {
-        background: #888;
+        background: #9ca3af;
         border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #6b7280;
       }
-      /* Keyframe Animations for Hero and Alerts */
-      @keyframes fadeInDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
+      /* Card Effects */
+      .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
       }
-      @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+      .card-hover .card-image {
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+      .card-hover:hover .card-image {
+        transform: scale(1.08);
       }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
+      .card-hover {
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
       }
-
-      .animate-fade-in-down {
-        animation: fadeInDown 0.8s ease-out forwards;
+      /* Button Effects */
+      .btn-hover-effect:hover {
+        transform: scale(1.02);
       }
-      .animate-fade-in-up {
-        animation: fadeInUp 1s ease-out forwards;
-      }
-      .animate-slide-in-right {
-        animation: slideInRight 0.5s ease-out forwards;
-      }
-      .animate-slide-out-right {
-        animation: slideOutRight 0.5s ease-in forwards;
+      .btn-hover-effect {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       }
     </style>
   </head>
-  <body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
-    <!-- Navbar -->
+  <body class="bg-gray-100 text-gray-800 antialiased">
+
     <%- include('../partials/header') %>
+    <%- include('../partials/profile') %>
+    
 
-    <main class="max-w-7xl mx-auto px-4 py-12">
-      <h3 class="text-3xl font-bold mb-10 text-gray-800">Places to Stay</h3>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <section class="relative bg-white shadow-md">
+      <div class="container mx-auto px-4 py-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-rose-600 tracking-tight leading-tight">
+          Find your next getaway ✨
+        </h2>
+        <p class="text-lg md:text-xl text-gray-600 mt-3">
+          Explore homes, cabins, and unique places to stay
+        </p>
+      </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 py-16">
+      <form
+        action="/home-list"
+        method="GET"
+        class="flex flex-col md:flex-row items-center gap-4 mb-6 w-full max-w-xl mx-auto px-4"
+      >
+        <div class="relative flex-grow w-full md:w-auto">
+          <input
+            type="text"
+            name="location"
+            placeholder="Search by location..."
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-12 text-gray-700 placeholder-gray-400 shadow-sm 
+                  focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition duration-300 ease-in-out"
+            aria-label="Search by location"
+          />
+          <button 
+            type="submit" 
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-rose-500 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-400"
+            aria-label="Submit search"
+          >
+            <i class="fas fa-search fa-lg"></i>
+          </button>
+        </div>
+        <button
+          type="submit"
+          class="hidden md:inline-flex bg-rose-500 hover:bg-rose-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-rose-300"
+        >
+          Search
+        </button>
+      </form>
+      <h3 class="text-3xl font-bold mb-12 text-gray-900 tracking-tight">🏡 Places to Stay</h3>
+
+      <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        
+
         <% registerHome.forEach(home => { %>
           <% if (home) { %>
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group">
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover group border border-gray-200">
               <a href="/homes/<%= home._id %>" class="block">
-                <img
-                  src="<%= home.photoUrl %>"
-                  alt="<%= home.houseName %>"
-                  class="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
-                  onerror="this.onerror=null;this.src='https://placehold.co/800x600/E0E0E0/333333?text=Image+Not+Found';"
-                />
+                <div class="relative h-48 overflow-hidden rounded-t-2xl">
+                  <img
+                    src="<%= home.photoUrl %>"
+                    alt="<%= home.houseName %>"
+                    class="w-full h-full object-cover card-image"
+                    onerror="this.onerror=null;this.src='https://placehold.co/800x600/E0E0E0/333333?text=No+Image';"
+                  />
+                  <span class="absolute top-3 right-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-sm font-semibold text-gray-700 shadow">
+                    <i class="fas fa-star text-yellow-500"></i> <%= home.rating %>
+                  </span>
+                </div>
               </a>
 
-              <div class="p-4 space-y-2">
-                <h4 class="text-lg font-semibold text-gray-900 truncate"><%= home.houseName %></h4>
-                <p class="text-sm text-gray-500 flex items-center gap-1">
-                  <i class="fas fa-map-marker-alt text-rose-500"></i> 📍 <%= home.location %>
-                </p>
-                <p class="text-sm text-gray-500 flex items-center gap-1">
-                  <i class="fas fa-dollar-sign text-green-600"></i> 💰 <%= home.price %> / night
-                </p>
-                <p class="text-sm text-yellow-500 font-semibold flex items-center gap-1">
-                  <i class="fas fa-star"></i> ⭐ <%= home.rating %> / 5
-                </p>
-
-                <div class="flex flex-col gap-3 mt-4">
-                  <a
-                    href="/homes/<%= home._id %>"
-                    class="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow transition-all duration-200 transform hover:scale-105"
-                  >
-                    <i class="fas fa-info-circle"></i> 🔍 View Details
+              <div class="p-5 space-y-3">
+                <a href="/homes/<%= home._id %>" class="block">
+                  <h4 class="text-lg font-bold text-gray-900 truncate hover:text-rose-600"><%= home.houseName %></h4>
                 </a>
+                <div class="space-y-1 text-gray-600">
+                  <p class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-map-marker-alt text-rose-500"></i> <%= home.location %>
+                  </p>
+                  <p class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-dollar-sign text-green-600"></i>
+                    <span class="font-bold text-gray-900 text-base"><%= home.price %></span> / night
+                  </p>
+                </div>
 
-                  <%- include('../partials/favourite', { home: home, user: user }) %>
+                <div class="pt-4 space-y-3">
+                  <a href="/homes/<%= home._id %>"
+                     class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
+                    <i class="fas fa-info-circle"></i> View Details
+                  </a>
 
                   <% if (isLoggedIn && user.userType !== 'host') { %>
-                    <div><%= console.log(home) %></div>
                     <% if (home.isBooked && !home.isBookableAgain) { %>
                       <button
-                        class="w-full flex items-center justify-center gap-2 bg-gray-400 cursor-not-allowed text-white font-medium py-2.5 px-4 rounded-xl shadow"
-                        disabled
-                      >
+                        class="w-full bg-gray-300 text-gray-600 font-semibold py-2.5 rounded-xl shadow-inner cursor-not-allowed">
                         🚫 Already Booked
                       </button>
                     <% } else { %>
@@ -116,8 +154,7 @@
                         <input type="hidden" name="homeId" value="<%= home._id %>">
                         <button
                           type="submit"
-                          class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition-all duration-200 transform hover:scale-105"
-                        >
+                          class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
                           🏡 Book Now
                         </button>
                       </form>
@@ -126,9 +163,8 @@
                     <form action="/login" method="GET">
                       <button
                         type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-xl shadow transition-all duration-200 transform hover:scale-105"
-                      >
-                        <i class="fas fa-lock"></i> 🔒 Login to Book
+                        class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-xl btn-hover-effect">
+                        <i class="fas fa-lock"></i> Login to Book
                       </button>
                     </form>
                   <% } %>
@@ -140,9 +176,8 @@
       </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-16">
-      <div class="max-w-7xl mx-auto px-4 py-6 text-center text-gray-500 text-sm">
+    <footer class="bg-white border-t mt-16 shadow-inner">
+      <div class="max-w-7xl mx-auto p-6 text-center text-gray-500 text-sm">
         © <%= new Date().getFullYear() %> Airbnb Clone. All rights reserved.
       </div>
     </footer>
