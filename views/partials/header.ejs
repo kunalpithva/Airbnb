@@ -1,9 +1,9 @@
 <% "use strict"; const current = typeof currentPage !== 'undefined' ? currentPage : ''; %>
 
-<header class="bg-white shadow-md sticky top-0 z-50">
+<header class="bg-white shadow sticky top-0 z-50">
   <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 py-3">
     <!-- Logo -->
-    <a href="/" class="text-3xl font-extrabold text-rose-500 tracking-tight hover:text-rose-600 transition">
+    <a href="/" class="text-3xl font-extrabold text-rose-600 tracking-tight hover:text-rose-700 transition">
       Airbnb
     </a>
 
@@ -12,7 +12,7 @@
       id="mobile-menu-button"
       aria-label="Toggle menu"
       aria-expanded="false"
-      class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-rose-500 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-400"
+      class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-rose-600 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-400 transition"
       type="button"
     >
       <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -37,85 +37,97 @@
 
     <!-- Navigation -->
     <nav
-      id="mobile-menu"
-      class="hidden w-full md:flex md:items-center md:w-auto md:gap-4 ml-auto mt-4 md:mt-0 transition-all ease-in-out duration-300"
-      role="navigation"
-      aria-label="Main Navigation"
-    >
-      <% if (isLoggedIn) { %>
-        <% if (user && user.userType === 'guest') { %>
-          
-
-          <a href="/home-list"
-            class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap border-b md:border-none border-gray-200
-              <%= current === 'Home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
-            Home
-          </a>
-          <a href="/booking"
-            class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap border-b md:border-none border-gray-200
-              <%= current === 'booking' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
-            Bookings
-          </a>
-          <a href="/favourites"
-            class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap border-b md:border-none border-gray-200
-              <%= current === 'favourites' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
-            Favorites
-          </a>
-        <% } else if (user && user.userType === 'host') { %>
-          <a href="/host/host-home-list"
-            class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap border-b md:border-none border-gray-200
-              <%= current === 'host-home-list' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
-            Host Home
-          </a>
-          <a href="/host/add-home"
-            class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap border-b md:border-none border-gray-200
-              <%= current === '/host/add-home' ? 'bg-rose-500 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %>">
-            Add Home
-          </a>
+  id="mobile-menu"
+  class="fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full
+         bg-white md:bg-transparent
+         shadow-lg md:shadow-none
+         md:relative md:translate-x-0 md:flex md:items-center md:w-auto md:ml-auto md:mt-0
+         transition-transform duration-300 ease-in-out"
+  role="navigation"
+  aria-label="Main Navigation"
+>
+  <div class="flex flex-col md:flex-row md:items-center w-full md:gap-4 p-6 md:p-0 h-full md:h-auto overflow-y-auto">
+        <% if (isLoggedIn) { %>
+          <% if (user && user.userType === 'guest') { %>
+            <a href="/home-list"
+              class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap border-b md:border-none border-gray-200
+                <%= current === 'Home' ? 'bg-rose-600 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %> transition"
+            >
+              Home
+            </a>
+            <a href="/booking"
+              class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap border-b md:border-none border-gray-200
+                <%= current === 'booking' ? 'bg-rose-600 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %> transition"
+            >
+              Bookings
+            </a>
+            <a href="/favourites"
+              class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap border-b md:border-none border-gray-200
+                <%= current === 'favourites' ? 'bg-rose-600 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %> transition"
+            >
+              Favorites
+            </a>
+          <% } else if (user && user.userType === 'host') { %>
+            <a href="/host/host-home-list"
+              class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap border-b md:border-none border-gray-200
+                <%= current === 'host-home-list' ? 'bg-rose-600 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %> transition"
+            >
+              Host Home
+            </a>
+            <a href="/host/add-home"
+              class="block md:inline-block px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap border-b md:border-none border-gray-200
+                <%= current === 'add-home' ? 'bg-rose-600 text-white' : 'text-gray-700 hover:bg-rose-100 hover:text-rose-600' %> transition"
+            >
+              Add Home
+            </a>
+          <% } %>
         <% } %>
-      <% } %>
 
-      <% if (!isLoggedIn) { %>
-        <a href="/login" class="w-full md:w-auto">
-          <button
-            class="w-full md:w-auto px-4 py-2 text-sm font-semibold border border-rose-500 text-rose-500 rounded-md hover:bg-rose-50 transition"
-          >
-            Login
-          </button>
-        </a>
-        <a href="/signup" class="w-full md:w-auto mt-2 md:mt-0 md:ml-2">
-          <button
-            class="w-full md:w-auto px-4 py-2 text-sm font-semibold bg-rose-500 text-white rounded-md hover:bg-rose-600 transition"
-          >
-            Sign Up
-          </button>
-        </a>
-      <% } else { %>
-        <form action="/logout" method="POST" class="w-full md:w-auto mt-2 md:mt-0 md:ml-2">
-          <button
-            class="w-full md:w-auto px-4 py-2 text-sm font-semibold border border-rose-500 text-rose-500 rounded-md hover:bg-rose-100 transition"
-          >
-            Log Out
-          </button>
-        </form>
-      <% } %>
+        <% if (!isLoggedIn) { %>
+          <a href="/login" class="w-full md:w-auto">
+            <button
+              class="w-full md:w-auto px-4 py-2 text-sm font-semibold border border-rose-600 text-rose-600 rounded-md hover:bg-rose-50 transition focus:outline-none focus:ring-2 focus:ring-rose-400"
+            >
+              Login
+            </button>
+          </a>
+          <a href="/signup" class="w-full md:w-auto mt-2 md:mt-0 md:ml-2">
+            <button
+              class="w-full md:w-auto px-4 py-2 text-sm font-semibold bg-rose-600 text-white rounded-md hover:bg-rose-700 transition focus:outline-none focus:ring-4 focus:ring-rose-300"
+            >
+              Sign Up
+            </button>
+          </a>
+        <% } else { %>
+          <form action="/logout" method="POST" class="w-full md:w-auto mt-2 md:mt-0 md:ml-2">
+            <button
+              class="w-full md:w-auto px-4 py-2 text-sm font-semibold border border-rose-600 text-rose-600 rounded-md hover:bg-rose-100 transition focus:outline-none focus:ring-2 focus:ring-rose-400"
+            >
+              Log Out
+            </button>
+          </form>
+        <% } %>
 
-      <!-- Avatar + Name -->
-      <% if (isLoggedIn && user) { %>
-        <div
-          id="avatarToggle"
-          class="flex items-center gap-2 pl-4 border-t md:border-t-0 border-gray-200 mt-4 md:mt-0 md:ml-4 cursor-pointer select-none"
-        >
+        <!-- Avatar + Name -->
+        <% if (isLoggedIn && user) { %>
           <div
-            class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-500 text-white text-sm font-bold uppercase shadow"
+            id="avatarToggle"
+            class="flex items-center gap-2 pl-4 border-t md:border-t-0 border-gray-200 mt-6 md:mt-0 md:ml-4 cursor-pointer select-none group relative"
+            tabindex="0"
+            aria-label="User menu: <%= user.firstName ? user.firstName : 'User' %>"
           >
-            <%= user.firstName ? user.firstName.charAt(0) : '?' %>
+            <div
+              class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-600 text-white text-sm font-bold uppercase shadow"
+              title="<%= user.firstName ? user.firstName : 'User' %>"
+            >
+              <%= user.firstName ? user.firstName.charAt(0) : '?' %>
+            </div>
+            <span class="text-sm font-medium text-gray-800 group-focus:underline">
+              <%= user.firstName ? user.firstName : 'User' %>
+            </span>
           </div>
-          <span class="text-sm font-medium text-gray-800">
-            <%= user.firstName ? user.firstName : 'User' %>
-          </span>
-        </div>
-      <% } %>
+        <% } %>
+      </div>
     </nav>
   </div>
 
@@ -126,9 +138,15 @@
     const closeIcon = document.getElementById('close-icon');
 
     menuButton.addEventListener('click', () => {
-      const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', !isExpanded);
-      mobileMenu.classList.toggle('hidden');
+      const expanded = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', !expanded);
+      if (mobileMenu.classList.contains('-translate-x-full')) {
+        mobileMenu.classList.remove('-translate-x-full');
+        mobileMenu.classList.add('translate-x-0');
+      } else {
+        mobileMenu.classList.remove('translate-x-0');
+        mobileMenu.classList.add('-translate-x-full');
+      }
       menuIcon.classList.toggle('hidden');
       closeIcon.classList.toggle('hidden');
     });
