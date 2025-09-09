@@ -31,14 +31,14 @@
 
       <div class="flex items-center gap-5 border-b pb-6 mb-6">
         <div class="w-16 h-16 rounded-full bg-rose-500 text-white text-3xl font-extrabold flex items-center justify-center shadow-md uppercase">
-          <%= user.firstName ? user.firstName.charAt(0) : '?' %>
+          <%= user && user.firstName ? user.firstName.charAt(0) : '?' %>
         </div>
         <div>
           <p class="text-xl font-semibold text-gray-900">
-            <%= user.firstName ? user.firstName + ' ' + (user.lastName || '') : 'User' %>
+            <%= user && user.firstName ? user.firstName + ' ' + (user.lastName || '') : 'Guest' %>
           </p>
           <p class="text-sm text-gray-500 italic mt-1">
-            <%= user.userType ? user.userType.charAt(0).toUpperCase() + user.userType.slice(1) : 'Guest' %>
+            <%= user && user.userType ? user.userType.charAt(0).toUpperCase() + user.userType.slice(1) : 'Guest' %>
           </p>
         </div>
       </div>
@@ -47,10 +47,10 @@
         <h3 class="text-lg font-bold text-gray-800 mb-2">Account</h3>
         <p class="flex items-center gap-3 text-sm text-gray-600">
           <i class="fas fa-envelope text-rose-500"></i>
-          <span><%= user.email || 'N/A' %></span>
+          <span><%= user && user.email ? user.email : 'N/A' %></span>
         </p>
 
-        <% if (user.userType === 'host') { %>
+        <% if (user && user.userType === 'host') { %>
           <a href="/home-list" class="flex items-center gap-3 p-3 rounded-lg text-gray-800 hover:text-rose-600 transition-colors duration-200 profile-link-hover">
             <i class="fas fa-home text-xl text-rose-500"></i>
             <span class="font-medium">My Homes</span>
@@ -81,34 +81,32 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const avatarToggle = document.getElementById('avatarToggle');
-      const profilePanel = document.getElementById('profilePanel');
-      const closePanel = document.getElementById('closePanel');
+    const avatarToggle = document.getElementById('avatarToggle');
+    const profilePanel = document.getElementById('profilePanel');
+    const closePanel = document.getElementById('closePanel');
+    const backdrop = document.getElementById('backdrop');
 
-      // Check if the toggle button exists before adding the event listener
-      if (avatarToggle) {
-        avatarToggle.addEventListener('click', () => {
-          profilePanel.classList.remove('translate-x-full');
-          profilePanel.setAttribute('aria-hidden', 'false');
-        });
-      }
+    if (!avatarToggle || !backdrop || !closePanel || !profilePanel) {
+        console.error('One or more required elements are missing.');
+        return;
+    }
 
-      closePanel.addEventListener('click', () => {
+    avatarToggle.addEventListener('click', () => {
+        profilePanel.classList.remove('translate-x-full');
+        profilePanel.setAttribute('aria-hidden', 'false');
+        backdrop.classList.remove('hidden');
+    });
+
+    const closeProfile = () => {
         profilePanel.classList.add('translate-x-full');
         profilePanel.setAttribute('aria-hidden', 'true');
-      });
+        backdrop.classList.add('hidden');
+    };
 
-      // Optional: close panel if clicked outside it
-      document.addEventListener('click', (event) => {
-        if (
-          !profilePanel.contains(event.target) &&
-          (avatarToggle && !avatarToggle.contains(event.target))
-        ) {
-          profilePanel.classList.add('translate-x-full');
-          profilePanel.setAttribute('aria-hidden', 'true');
-        }
-      });
-    });
+    closePanel.addEventListener('click', closeProfile);
+    backdrop.addEventListener('click', closeProfile);
+});
+
   </script>
 </body>
 </html>
